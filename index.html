@@ -14,15 +14,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:#0D0D0F; --surface:#16171A; --card:#1E2025; --border:#2A2D35;
-      --accent:#C8FF3E; --accent2:#4DFFB4; --warn:#FFB84D; --danger:#FF4D6D;
-      --text:#E8E9EB; --muted:#7A7F8E;
-      --radius:14px;
-      --ff-d:'Oswald',sans-serif; --ff-b:system-ui,-apple-system,sans-serif;
-      --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
+      --bg:#0D0D0F;--surface:#16171A;--card:#1E2025;--border:#2A2D35;
+      --accent:#C8FF3E;--accent2:#4DFFB4;--warn:#FFB84D;--danger:#FF4D6D;
+      --text:#E8E9EB;--muted:#7A7F8E;--radius:14px;
+      --ff-d:'Oswald',sans-serif;--ff-b:system-ui,-apple-system,sans-serif;
+      --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{font-size:16px}
     body{background:var(--bg);color:var(--text);font-family:var(--ff-b);min-height:100dvh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
     button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     input{font:inherit;color:inherit}
@@ -31,12 +29,10 @@
     .screen.active{display:flex}
     .scrollable{overflow-y:auto;flex:1}
 
-    /* HEADER */
     .app-header{padding:calc(var(--st) + 14px) 16px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border)}
     .logo{font-family:var(--ff-d);font-size:20px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
     .logo span{color:var(--text)}
 
-    /* BOTTOM NAV */
     .bottom-nav{display:flex;background:var(--surface);border-top:1px solid var(--border);padding-bottom:var(--sb);position:sticky;bottom:0;z-index:10}
     .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;transition:color .15s}
     .nav-btn.active{color:var(--accent)}
@@ -57,13 +53,23 @@
     .stat-box .val{font-family:var(--ff-d);font-size:22px;font-weight:700;color:var(--accent2)}
     .stat-box .key{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
     .section-title{font-family:var(--ff-d);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-    .program-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+    .program-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
     .prog-item{background:var(--card);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px}
     .prog-badge{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--ff-d);font-size:12px;font-weight:700;flex-shrink:0}
     .prog-badge.haut{background:rgba(200,255,62,.15);color:var(--accent)}
     .prog-badge.jambes{background:rgba(77,255,180,.15);color:var(--accent2)}
     .prog-item .pname{font-weight:600;font-size:14px}
     .prog-item .pmuscles{font-size:11px;color:var(--muted);margin-top:2px}
+
+    /* RECOVERY VISU */
+    .recovery-section{margin-bottom:20px}
+    .recovery-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .recovery-card{background:var(--card);border-radius:var(--radius);padding:12px}
+    .recovery-card .rc-name{font-size:12px;font-weight:600;margin-bottom:6px}
+    .recovery-bar-wrap{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:4px}
+    .recovery-bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
+    .recovery-pct{font-family:var(--ff-d);font-size:16px;font-weight:700}
+    .recovery-label{font-size:10px;color:var(--muted);margin-top:1px}
 
     /* SESSION */
     .session-header{padding-top:8px;margin-bottom:12px}
@@ -79,59 +85,85 @@
     .exo-num{width:26px;height:26px;border-radius:7px;background:var(--accent);color:#0D0D0F;font-family:var(--ff-d);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
     .exo-name{font-weight:700;font-size:14px;line-height:1.2}
     .exo-meta{font-size:11px;color:var(--muted);margin-top:2px}
-    .btn-alt{margin-top:4px;font-size:11px;color:var(--warn);font-weight:600;text-decoration:underline;padding:0}
-
-    /* ALT MODAL */
-    .alt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;align-items:flex-end;justify-content:center}
-    .alt-modal.visible{display:flex}
-    .alt-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px calc(20px + var(--sb));width:100%;max-width:430px;max-height:80dvh;overflow-y:auto}
-    .alt-sheet h3{font-family:var(--ff-d);font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-    .alt-sheet .alt-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
-    .alt-group-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:12px 0 6px}
-    .alt-item{background:var(--card);border-radius:10px;padding:12px 14px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .alt-item .aname{font-weight:600;font-size:14px}
-    .alt-item .ameta{font-size:11px;color:var(--muted);margin-top:2px}
-    .alt-item .btn-pick{background:var(--accent);color:#0D0D0F;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;flex-shrink:0}
-    .btn-close-alt{display:block;width:100%;margin-top:14px;background:var(--border);border-radius:10px;padding:12px;font-size:14px;font-weight:600;text-align:center}
+    .exo-note{font-size:11px;color:var(--muted);margin-top:3px;font-style:italic}
+    .exo-actions{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+    .btn-sm{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--border)}
+    .btn-sm.alt{color:var(--warn);border-color:var(--warn)}
+    .btn-sm.add-set{color:var(--accent2);border-color:var(--accent2)}
 
     /* SETS TABLE */
     .sets-table{width:100%;border-collapse:collapse}
-    .sets-table th{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:6px 14px;text-align:left;background:var(--surface)}
-    .sets-table td{padding:9px 14px;border-top:1px solid var(--border);font-size:14px;vertical-align:middle}
-    .sets-table tr.done td{opacity:.45}
-    .weight-input{background:var(--border);border:1px solid var(--border);border-radius:6px;padding:5px 6px;width:60px;text-align:center;font-size:14px;font-weight:600}
+    .sets-table th{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:6px 10px;text-align:left;background:var(--surface)}
+    .sets-table td{padding:8px 10px;border-top:1px solid var(--border);font-size:13px;vertical-align:middle}
+    .sets-table tr.done td{opacity:.4}
+    .sets-table tr.warmup-row td{opacity:.7}
+    .warmup-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--warn);background:rgba(255,184,77,.12);border-radius:4px;padding:2px 5px}
+    .weight-input{background:var(--border);border:1px solid var(--border);border-radius:6px;padding:4px 5px;width:55px;text-align:center;font-size:13px;font-weight:600}
     .weight-input:focus{outline:1px solid var(--accent)}
-    .set-check{width:28px;height:28px;border-radius:7px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+    .reps-input{background:var(--border);border:1px solid var(--border);border-radius:6px;padding:4px 5px;width:44px;text-align:center;font-size:13px;font-weight:600}
+    .reps-input:focus{outline:1px solid var(--accent)}
+    .set-check{width:28px;height:28px;border-radius:7px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;font-size:14px}
     .set-check:active{transform:scale(.9)}
     .set-done-check{background:var(--accent);border-color:var(--accent);color:#0D0D0F;font-weight:700}
 
+    /* ADD EXO */
+    .btn-add-exo{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border:2px dashed var(--border);border-radius:var(--radius);color:var(--muted);font-size:13px;font-weight:600;margin-bottom:16px;transition:all .15s}
+    .btn-add-exo:active{border-color:var(--accent);color:var(--accent)}
+
+    /* SUGGESTION BADGE */
+    .suggestion-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(200,255,62,.1);border:1px solid rgba(200,255,62,.3);border-radius:6px;padding:3px 7px;font-size:10px;font-weight:700;color:var(--accent);margin-top:4px}
+
     /* REST TIMER */
-    .rest-overlay{display:none;position:fixed;inset:0;background:rgba(13,13,15,.97);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:32px}
+    .rest-overlay{display:none;position:fixed;inset:0;background:rgba(13,13,15,.97);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:32px}
     .rest-overlay.visible{display:flex}
     .rest-label{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
     .timer-ring{position:relative;width:200px;height:200px}
     .timer-ring svg{transform:rotate(-90deg)}
     .ring-bg{fill:none;stroke:var(--border);stroke-width:6}
-    .ring-fill{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .5s linear}
+    .ring-fill{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round}
     .timer-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
     .timer-count{font-family:var(--ff-d);font-size:60px;font-weight:700;color:var(--accent);line-height:1}
     .timer-unit{font-size:13px;color:var(--muted);margin-top:3px}
-    .rest-next{font-size:13px;color:var(--muted)}
+    .rest-next{font-size:13px;color:var(--muted);max-width:260px}
     .rest-next strong{color:var(--text)}
-    .btn-skip{background:var(--card);border:1px solid var(--border);border-radius:50px;padding:12px 28px;font-size:14px;font-weight:600;transition:background .15s}
+    .btn-skip{background:var(--card);border:1px solid var(--border);border-radius:50px;padding:12px 28px;font-size:14px;font-weight:600}
     .btn-skip:active{background:var(--border)}
 
+    /* MODAL GÉNÉRIQUE */
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;align-items:flex-end;justify-content:center}
+    .modal.visible{display:flex}
+    .modal-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px calc(20px + var(--sb));width:100%;max-width:430px;max-height:85dvh;overflow-y:auto}
+    .modal-sheet h3{font-family:var(--ff-d);font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+    .modal-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+    .modal-group-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:12px 0 6px}
+    .modal-item{background:var(--card);border-radius:10px;padding:11px 13px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .modal-item .iname{font-weight:600;font-size:13px}
+    .modal-item .imeta{font-size:11px;color:var(--muted);margin-top:2px}
+    .btn-pick{background:var(--accent);color:#0D0D0F;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;flex-shrink:0}
+    .btn-close-modal{display:block;width:100%;margin-top:12px;background:var(--border);border-radius:10px;padding:12px;font-size:14px;font-weight:600;text-align:center}
+
+    /* ADD EXO MODAL */
+    .add-exo-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;color:var(--text);margin-bottom:10px}
+    .add-exo-input:focus{outline:1px solid var(--accent)}
+    .btn-add-confirm{display:block;width:100%;background:var(--accent);color:#0D0D0F;border-radius:10px;padding:13px;font-family:var(--ff-d);font-size:15px;font-weight:700;letter-spacing:1px;text-align:center;margin-bottom:8px}
+
     /* FINISH */
-    .finish-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;gap:10px}
+    .finish-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;gap:10px;overflow-y:auto}
     .finish-overlay.visible{display:flex}
-    .finish-icon{font-size:68px;margin-bottom:6px}
-    .finish-overlay h2{font-family:var(--ff-d);font-size:34px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent)}
-    .finish-overlay p{color:var(--muted);font-size:14px;max-width:240px}
-    .finish-stats{display:flex;gap:24px;margin-top:6px}
-    .finish-stat .val{font-family:var(--ff-d);font-size:26px;font-weight:700;color:var(--accent2)}
+    .finish-icon{font-size:64px;margin-bottom:4px}
+    .finish-overlay h2{font-family:var(--ff-d);font-size:32px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent)}
+    .finish-overlay p{color:var(--muted);font-size:13px;max-width:240px}
+    .finish-stats{display:flex;gap:20px;margin-top:6px}
+    .finish-stat .val{font-family:var(--ff-d);font-size:24px;font-weight:700;color:var(--accent2)}
     .finish-stat .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:1px}
-    .btn-primary{margin-top:10px;background:var(--accent);color:#0D0D0F;border-radius:50px;padding:15px 36px;font-family:var(--ff-d);font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:opacity .15s;width:100%;max-width:280px}
+    .btn-primary{margin-top:10px;background:var(--accent);color:#0D0D0F;border-radius:50px;padding:14px 36px;font-family:var(--ff-d);font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:opacity .15s;width:100%;max-width:280px}
     .btn-primary:active{opacity:.8}
+    .finish-suggestions{background:var(--card);border-radius:var(--radius);padding:14px;margin-top:8px;text-align:left;width:100%;max-width:340px}
+    .finish-suggestions h4{font-family:var(--ff-d);font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+    .sug-item{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-top:1px solid var(--border)}
+    .sug-item:first-of-type{border-top:none}
+    .sug-item .sname{color:var(--text)}
+    .sug-item .snew{color:var(--accent);font-weight:700}
 
     /* HISTORY */
     .history-list{display:flex;flex-direction:column;gap:8px;padding-bottom:32px}
@@ -151,7 +183,6 @@
     .pr-val{color:var(--text);font-weight:600}
     .pr-delta{color:var(--accent);font-size:11px;font-weight:700}
 
-    /* EMPTY */
     .empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);text-align:center;padding-bottom:60px}
     .empty-state svg{opacity:.3}
     .empty-state p{font-size:13px}
@@ -161,7 +192,7 @@
 <div id="app">
   <header class="app-header">
     <div class="logo">Train<span>Forge</span></div>
-    <div id="header-badge" style="font-size:11px;color:var(--muted)"></div>
+    <div id="hdr-right" style="font-size:11px;color:var(--muted)"></div>
   </header>
 
   <!-- HOME -->
@@ -181,6 +212,13 @@
       <div class="stat-box"><div class="val" id="st-month">0</div><div class="key">Ce mois</div></div>
       <div class="stat-box"><div class="val" id="st-streak">0</div><div class="key">Série 🔥</div></div>
     </div>
+
+    <!-- RECOVERY -->
+    <div class="recovery-section">
+      <div class="section-title">Récupération musculaire</div>
+      <div class="recovery-grid" id="recovery-grid"></div>
+    </div>
+
     <div class="section-title">Le programme</div>
     <div class="program-list" id="prog-list"></div>
   </section>
@@ -249,12 +287,31 @@
 </div>
 
 <!-- ALT MODAL -->
-<div class="alt-modal" id="alt-modal">
-  <div class="alt-sheet">
+<div class="modal" id="alt-modal">
+  <div class="modal-sheet">
     <h3 id="alt-title">Alternatives</h3>
-    <div class="alt-sub" id="alt-sub">Choisis un exercice de remplacement</div>
+    <div class="modal-sub">Choisis un exercice de remplacement</div>
     <div id="alt-content"></div>
-    <button class="btn-close-alt" id="btn-close-alt">Fermer</button>
+    <button class="btn-close-modal" id="btn-close-alt">Fermer</button>
+  </div>
+</div>
+
+<!-- ADD EXO MODAL -->
+<div class="modal" id="addexo-modal">
+  <div class="modal-sheet">
+    <h3>Ajouter un exercice</h3>
+    <div class="modal-sub">Exercice supplémentaire pour cette séance</div>
+    <input class="add-exo-input" id="addexo-name" placeholder="Nom de l'exercice" />
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <input class="add-exo-input" id="addexo-sets" type="number" min="1" max="10" value="3" placeholder="Séries" style="margin-bottom:0"/>
+      <input class="add-exo-input" id="addexo-reps" value="10-12" placeholder="Reps" style="margin-bottom:0"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+      <input class="add-exo-input" id="addexo-kg" type="number" min="0" step="2.5" value="20" placeholder="Charge kg" style="margin-bottom:0"/>
+      <input class="add-exo-input" id="addexo-rest" type="number" min="30" step="15" value="90" placeholder="Repos sec" style="margin-bottom:0"/>
+    </div>
+    <button class="btn-add-confirm" id="btn-addexo-confirm">Ajouter →</button>
+    <button class="btn-close-modal" id="btn-close-addexo">Annuler</button>
   </div>
 </div>
 
@@ -268,356 +325,151 @@
     <div class="finish-stat"><div class="val" id="fin-vol">0</div><div class="lbl">Volume kg</div></div>
     <div class="finish-stat"><div class="val" id="fin-time">0</div><div class="lbl">Minutes</div></div>
   </div>
+  <div class="finish-suggestions" id="fin-suggestions" style="display:none">
+    <h4>📈 Suggestions prochaine fois</h4>
+    <div id="fin-sug-list"></div>
+  </div>
   <button class="btn-primary" id="btn-fin-ok">Retour à l'accueil</button>
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════
-   PROGRAMME — 4 SÉANCES basé sur photo Gravl
-   Matériel domicile : barre + haltères + chaise romaine
-   Durée cible : 50-75 min (~20-22 séries par séance)
-   ══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════
+   PROGRAMME
+══════════════════════════════════════ */
 const PROGRAM = [
   {
-    id:'hautA', name:'Haut A', type:'haut',
+    id:'hautA',name:'Haut A',type:'haut',
     desc:'Pectoraux · Dos · Épaules · Triceps · Biceps',
-    muscles:'Grand pectoral, grand dorsal, deltoïdes, triceps, biceps',
+    muscles:['pectoraux','dos','épaules','triceps','biceps'],
     exercises:[
-      {
-        id:'bp', name:'Développé couché barre', sets:4, reps:'8-10', restSec:120, defaultKg:60,
-        note:'Descends jusqu\'au sternum, coudes à 45°.',
-        alts:{
-          maison:[
-            {name:'Pompes lestées', meta:'Sac à dos lesté · même gainage', defaultKg:10},
-            {name:'Développé haltères couché', meta:'Amplitude plus grande · unilatéral possible', defaultKg:24},
-          ],
-          salle:[
-            {name:'Développé convergent machine', meta:'Guidé · bon pour finition', defaultKg:50},
-            {name:'Câble croisé bas', meta:'Tension constante · isolation pecto', defaultKg:15},
-          ]
-        }
-      },
-      {
-        id:'row_b', name:'Rowing barre', sets:4, reps:'8-10', restSec:120, defaultKg:60,
-        note:'Buste à 45°, tirage vers le nombril, coudes le long du corps.',
-        alts:{
-          maison:[
-            {name:'Rowing haltère 1 bras', meta:'Appui sur banc · meilleure amplitude', defaultKg:24},
-            {name:'Rowing buste penché haltères', meta:'Bilatéral · bon recrutement dorsal', defaultKg:20},
-          ],
-          salle:[
-            {name:'Rowing poulie basse', meta:'Tension constante · axe horizontal', defaultKg:50},
-            {name:'Rowing T-bar', meta:'Charge lourde · trapèzes impliqués', defaultKg:40},
-          ]
-        }
-      },
-      {
-        id:'ohp', name:'Développé militaire barre', sets:3, reps:'10-12', restSec:90, defaultKg:40,
-        note:'Assis ou debout. Serrez les fessiers, gainez.',
-        alts:{
-          maison:[
-            {name:'Développé militaire haltères', meta:'Meilleure amplitude · stabilisateurs', defaultKg:16},
-            {name:'Pompes Pike (pieds surélevés)', meta:'Poids du corps · axe vertical', defaultKg:0},
-          ],
-          salle:[
-            {name:'Presse épaules machine', meta:'Guidé · sécurité', defaultKg:30},
-            {name:'Développé Arnold haltères', meta:'Rotation pronation · meilleur recrutement', defaultKg:14},
-          ]
-        }
-      },
-      {
-        id:'dips', name:'Dips (chaise / banc)', sets:3, reps:'10-12', restSec:75, defaultKg:0,
-        note:'Coudes vers l\'arrière, descends jusqu\'à 90°. Leste avec haltère entre les jambes si trop facile.',
-        alts:{
-          maison:[
-            {name:'Extension triceps barre front press', meta:'Allongé · barre sur le front', defaultKg:25},
-            {name:'Extension triceps haltère 1 bras', meta:'Assis · amplitude maximale', defaultKg:10},
-          ],
-          salle:[
-            {name:'Triceps poulie haute corde', meta:'Isolation · tension constante', defaultKg:20},
-            {name:'Dips parallèles lestés', meta:'Charge ajustable · masse triceps', defaultKg:10},
-          ]
-        }
-      },
-      {
-        id:'curl_b', name:'Curl barre', sets:3, reps:'10-12', restSec:75, defaultKg:30,
-        note:'Coudes fixes contre le corps. Supination complète.',
-        alts:{
-          maison:[
-            {name:'Curl haltères alternés', meta:'Unilat · meilleure supination', defaultKg:12},
-            {name:'Curl haltères marteau', meta:'Brachial · prise neutre', defaultKg:14},
-          ],
-          salle:[
-            {name:'Curl pupitre EZ', meta:'Isolation stricte · sans triche', defaultKg:25},
-            {name:'Curl câble bas', meta:'Tension constante en fin d\'extension', defaultKg:15},
-          ]
-        }
-      },
+      {id:'bp',name:'Développé couché barre',sets:4,reps:'8-10',restSec:120,defaultKg:60,warmupKgPct:.5,note:'Coudes à 45°, descends au sternum.',
+       alts:{maison:[{name:'Développé haltères couché',meta:'Amplitude plus grande',defaultKg:24},{name:'Pompes lestées',meta:'Sac lesté',defaultKg:10}],salle:[{name:'Développé convergent machine',meta:'Guidé',defaultKg:50},{name:'Câble croisé bas',meta:'Tension constante',defaultKg:15}]}},
+      {id:'row_b',name:'Rowing barre',sets:4,reps:'8-10',restSec:120,defaultKg:60,warmupKgPct:.5,note:'Buste 45°, tirage vers le nombril.',
+       alts:{maison:[{name:'Rowing haltère 1 bras',meta:'Appui sur banc',defaultKg:24},{name:'Rowing haltères buste penché',meta:'Bilatéral',defaultKg:20}],salle:[{name:'Rowing poulie basse',meta:'Tension constante',defaultKg:50},{name:'Rowing T-bar',meta:'Charge lourde',defaultKg:40}]}},
+      {id:'ohp',name:'Développé militaire barre',sets:3,reps:'10-12',restSec:90,defaultKg:40,warmupKgPct:.5,note:'Gainez, fessiers contractés.',
+       alts:{maison:[{name:'Développé militaire haltères',meta:'Meilleure amplitude',defaultKg:16},{name:'Pompes Pike pieds surélevés',meta:'Poids du corps',defaultKg:0}],salle:[{name:'Presse épaules machine',meta:'Guidé',defaultKg:30}]}},
+      {id:'dips',name:'Dips (banc / chaise)',sets:3,reps:'10-12',restSec:75,defaultKg:0,warmupKgPct:0,note:'Coudes vers l\'arrière, descends à 90°.',
+       alts:{maison:[{name:'Extension triceps barre',meta:'Front press allongé',defaultKg:25},{name:'Extension triceps haltère',meta:'1 bras, assis',defaultKg:10}],salle:[{name:'Triceps poulie haute corde',meta:'Isolation',defaultKg:20}]}},
+      {id:'curl_b',name:'Curl barre',sets:3,reps:'10-12',restSec:75,defaultKg:30,warmupKgPct:.6,note:'Coudes fixes, supination complète.',
+       alts:{maison:[{name:'Curl haltères alternés',meta:'Meilleure supination',defaultKg:12},{name:'Curl marteau haltères',meta:'Brachial',defaultKg:14}],salle:[{name:'Curl pupitre EZ',meta:'Isolation stricte',defaultKg:25}]}},
     ]
   },
   {
-    id:'jambesA', name:'Jambes A', type:'jambes',
+    id:'jambesA',name:'Jambes A',type:'jambes',
     desc:'Quadriceps · Ischio · Mollets · Abdos',
-    muscles:'Quadriceps, ischios, mollets, abdominaux, fessiers',
+    muscles:['quadriceps','ischio-jambiers','mollets','abdominaux','fessiers'],
     exercises:[
-      {
-        id:'sq', name:'Squat barre', sets:4, reps:'6-8', restSec:150, defaultKg:80,
-        note:'Pieds à largeur d\'épaules, genoux dans l\'axe des orteils. Descends à parallèle minimum.',
-        alts:{
-          maison:[
-            {name:'Goblet squat haltère', meta:'Technique · genoux ouverts naturellement', defaultKg:24},
-            {name:'Squat haltères', meta:'Haltères en rack · moins de charge au dos', defaultKg:30},
-          ],
-          salle:[
-            {name:'Leg press', meta:'Fort volume · genoux sans cisaillement', defaultKg:120},
-            {name:'Hack squat machine', meta:'Quadriceps dominant · dos protégé', defaultKg:60},
-          ]
-        }
-      },
-      {
-        id:'rdl', name:'Romanian Deadlift barre', sets:3, reps:'8-10', restSec:120, defaultKg:70,
-        note:'Dos droit, charge proche des jambes, genou légèrement fléchi. Tension ischios.',
-        alts:{
-          maison:[
-            {name:'Romanian Deadlift haltères', meta:'Amplitude légèrement plus grande', defaultKg:26},
-            {name:'Good Morning barre', meta:'Ischios/lombaires · charge plus légère', defaultKg:40},
-          ],
-          salle:[
-            {name:'Leg curl allongé', meta:'Isolation ischio · sans charge lombaire', defaultKg:35},
-            {name:'Deadlift roumain cable', meta:'Tension en bas maintenue', defaultKg:30},
-          ]
-        }
-      },
-      {
-        id:'lunge', name:'Fentes marchées haltères', sets:3, reps:'10/jambe', restSec:90, defaultKg:18,
-        note:'Genou avant ne dépasse pas les orteils. Fessiers + quadriceps.',
-        alts:{
-          maison:[
-            {name:'Split squat bulgare haltères', meta:'Pied arrière surélevé · intensité +++', defaultKg:16},
-            {name:'Fentes statiques barre', meta:'Plus stable · charge lourde possible', defaultKg:50},
-          ],
-          salle:[
-            {name:'Fentes à la Smith Machine', meta:'Guidé · fessiers selon placement pied', defaultKg:40},
-            {name:'Step up haltères', meta:'Unilat · bon équilibre', defaultKg:16},
-          ]
-        }
-      },
-      {
-        id:'mollet_d', name:'Mollets debout haltères', sets:4, reps:'15-20', restSec:45, defaultKg:24,
-        note:'Monte sur une marche pour amplitude complète. Pause 1s en bas.',
-        alts:{
-          maison:[
-            {name:'Mollets debout barre', meta:'Charge plus lourde · amplitude identique', defaultKg:60},
-            {name:'Mollets 1 jambe (poids du corps)', meta:'Difficile · pas de matériel', defaultKg:0},
-          ],
-          salle:[
-            {name:'Machine mollets debout', meta:'Charge lourde · guidé', defaultKg:80},
-            {name:'Machine mollets assis', meta:'Soléaire dominant', defaultKg:50},
-          ]
-        }
-      },
-      {
-        id:'cr_abs', name:'Chaise romaine — relevés de jambes', sets:3, reps:'15-20', restSec:60, defaultKg:0,
-        note:'Dos plaqué contre le dossier. Monte les genoux à la poitrine, ou jambes tendues si fort.',
-        alts:{
-          maison:[
-            {name:'Crunchs au sol', meta:'Simple · concentration abdominale', defaultKg:0},
-            {name:'Planche', meta:'Gainage intégral · 30-60s', defaultKg:0},
-          ],
-          salle:[
-            {name:'Câble crunch', meta:'Charge ajustable · bon recrutement', defaultKg:20},
-            {name:'Ab wheel rollout', meta:'Abdos + lombaires + stabilisateurs', defaultKg:0},
-          ]
-        }
-      },
+      {id:'sq',name:'Squat barre',sets:4,reps:'6-8',restSec:150,defaultKg:80,warmupKgPct:.5,note:'Genoux dans l\'axe, descends à parallèle.',
+       alts:{maison:[{name:'Goblet squat haltère',meta:'Technique',defaultKg:24},{name:'Squat haltères',meta:'Moins charge au dos',defaultKg:30}],salle:[{name:'Leg press',meta:'Volume élevé',defaultKg:120},{name:'Hack squat machine',meta:'Quadriceps dominant',defaultKg:60}]}},
+      {id:'rdl',name:'Romanian Deadlift barre',sets:3,reps:'8-10',restSec:120,defaultKg:70,warmupKgPct:.5,note:'Dos droit, genou légèrement fléchi.',
+       alts:{maison:[{name:'Romanian Deadlift haltères',meta:'Amplitude plus grande',defaultKg:26},{name:'Good Morning barre',meta:'Ischios/lombaires',defaultKg:40}],salle:[{name:'Leg curl allongé',meta:'Isolation ischio',defaultKg:35}]}},
+      {id:'lunge',name:'Fentes marchées haltères',sets:3,reps:'10/jambe',restSec:90,defaultKg:18,warmupKgPct:.5,note:'Genou avant ne dépasse pas les orteils.',
+       alts:{maison:[{name:'Split squat bulgare haltères',meta:'Intensité +++',defaultKg:16},{name:'Fentes statiques barre',meta:'Plus stable',defaultKg:50}],salle:[{name:'Fentes Smith Machine',meta:'Guidé',defaultKg:40}]}},
+      {id:'mollet_d',name:'Mollets debout haltères',sets:4,reps:'15-20',restSec:45,defaultKg:24,warmupKgPct:0,note:'Monte sur marche, pause 1s en bas.',
+       alts:{maison:[{name:'Mollets debout barre',meta:'Charge plus lourde',defaultKg:60},{name:'Mollets 1 jambe poids de corps',meta:'Sans matériel',defaultKg:0}],salle:[{name:'Machine mollets debout',meta:'Charge lourde',defaultKg:80}]}},
+      {id:'cr_abs',name:'Chaise romaine — relevés jambes',sets:3,reps:'15-20',restSec:60,defaultKg:0,warmupKgPct:0,note:'Dos plaqué, monte genoux à la poitrine.',
+       alts:{maison:[{name:'Crunchs au sol',meta:'Simple',defaultKg:0},{name:'Planche',meta:'30-60 secondes',defaultKg:0}],salle:[{name:'Câble crunch',meta:'Charge ajustable',defaultKg:20}]}},
     ]
   },
   {
-    id:'hautB', name:'Haut B', type:'haut',
+    id:'hautB',name:'Haut B',type:'haut',
     desc:'Dos · Pectoraux · Épaules · Biceps · Triceps · Trapèzes',
-    muscles:'Grand dorsal, trapèzes, pectoraux, deltoïdes postérieurs, biceps, triceps',
+    muscles:['dos','pectoraux','épaules','trapèzes','biceps','triceps'],
     exercises:[
-      {
-        id:'dl', name:'Soulevé de terre barre', sets:4, reps:'5-6', restSec:180, defaultKg:100,
-        note:'Exercice roi. Dos neutre, barre contre les tibias, hanches et épaules montent ensemble.',
-        alts:{
-          maison:[
-            {name:'Soulevé de terre haltères', meta:'Moins de charge max · même pattern', defaultKg:30},
-            {name:'Trap bar deadlift', meta:'Si dispo · dos plus droit', defaultKg:80},
-          ],
-          salle:[
-            {name:'Soulevé de terre roumain câble', meta:'Pattern postérieur · moins spinal', defaultKg:50},
-            {name:'Rack pull (depuis genoux)', meta:'Portion haute · dos épais', defaultKg:120},
-          ]
-        }
-      },
-      {
-        id:'trac', name:'Tractions (barre fixe)', sets:4, reps:'6-10', restSec:120, defaultKg:0,
-        note:'Prise pronation largeur d\'épaules. Tire les coudes vers les hanches.',
-        alts:{
-          maison:[
-            {name:'Tractions prise neutre', meta:'Plus biceps · souvent plus facile', defaultKg:0},
-            {name:'Tractions assistées avec élastique', meta:'Si trop dur · progression', defaultKg:0},
-          ],
-          salle:[
-            {name:'Lat pulldown poulie haute', meta:'Même pattern · charge ajustable', defaultKg:50},
-            {name:'Tractions lestées ceinture', meta:'Si trop facile · progression', defaultKg:10},
-          ]
-        }
-      },
-      {
-        id:'inc_h', name:'Développé incliné haltères', sets:3, reps:'10-12', restSec:90, defaultKg:22,
-        note:'Banc à 30°. Amplitude complète, coudes à 45° par rapport au buste.',
-        alts:{
-          maison:[
-            {name:'Développé incliné barre', meta:'Charge plus lourde · stabilité accrue', defaultKg:50},
-            {name:'Pompes pieds surélevés', meta:'Sans matériel · poids du corps', defaultKg:0},
-          ],
-          salle:[
-            {name:'Développé incliné machine', meta:'Guidé · bon pour finition', defaultKg:40},
-            {name:'Câble croisé haut', meta:'Isolation pecto bas · tension constante', defaultKg:12},
-          ]
-        }
-      },
-      {
-        id:'oiseau', name:'Oiseau haltères (rear delt)', sets:3, reps:'12-15', restSec:60, defaultKg:8,
-        note:'Buste penché à 90°. Bras quasi tendus, montée latérale. Très léger = meilleur recrutement.',
-        alts:{
-          maison:[
-            {name:'Face pull élastique', meta:'Deltoïdes postérieurs · rotation externe', defaultKg:0},
-            {name:'Oiseau couché sur banc incliné', meta:'Stabilisé · isolation maximale', defaultKg:6},
-          ],
-          salle:[
-            {name:'Pec deck inverse (machine)', meta:'Guidé · isolation rear delt', defaultKg:20},
-            {name:'Face pull câble', meta:'Meilleur exercice épaule postérieure', defaultKg:15},
-          ]
-        }
-      },
-      {
-        id:'shrug', name:'Haussements d\'épaules barre', sets:3, reps:'12-15', restSec:60, defaultKg:80,
-        note:'Prise pronation, bras tendus. Monte directement vers les oreilles, pas de rotation.',
-        alts:{
-          maison:[
-            {name:'Haussements haltères', meta:'Amplitude légèrement plus grande', defaultKg:30},
-          ],
-          salle:[
-            {name:'Haussements poulie basse', meta:'Tension en bas maintenue', defaultKg:40},
-            {name:'Haussements à la Smith', meta:'Charge lourde · guidé', defaultKg:80},
-          ]
-        }
-      },
+      {id:'dl',name:'Soulevé de terre barre',sets:4,reps:'5-6',restSec:180,defaultKg:100,warmupKgPct:.5,note:'Dos neutre, barre contre les tibias.',
+       alts:{maison:[{name:'Soulevé de terre haltères',meta:'Même pattern',defaultKg:30}],salle:[{name:'Rack pull depuis genoux',meta:'Dos épais',defaultKg:120}]}},
+      {id:'trac',name:'Tractions',sets:4,reps:'6-10',restSec:120,defaultKg:0,warmupKgPct:0,note:'Tire les coudes vers les hanches.',
+       alts:{maison:[{name:'Tractions prise neutre',meta:'Plus biceps',defaultKg:0},{name:'Tractions élastique',meta:'Assistées',defaultKg:0}],salle:[{name:'Lat pulldown poulie',meta:'Charge ajustable',defaultKg:50},{name:'Tractions lestées',meta:'Si trop facile',defaultKg:10}]}},
+      {id:'inc_h',name:'Développé incliné haltères',sets:3,reps:'10-12',restSec:90,defaultKg:22,warmupKgPct:.5,note:'Banc à 30°, coudes à 45°.',
+       alts:{maison:[{name:'Développé incliné barre',meta:'Charge plus lourde',defaultKg:50},{name:'Pompes pieds surélevés',meta:'Poids du corps',defaultKg:0}],salle:[{name:'Développé incliné machine',meta:'Guidé',defaultKg:40}]}},
+      {id:'oiseau',name:'Oiseau haltères (rear delt)',sets:3,reps:'12-15',restSec:60,defaultKg:8,warmupKgPct:0,note:'Buste penché 90°, bras quasi tendus.',
+       alts:{maison:[{name:'Oiseau couché incliné',meta:'Stabilisé',defaultKg:6}],salle:[{name:'Pec deck inverse machine',meta:'Isolation',defaultKg:20},{name:'Face pull câble',meta:'Meilleur rear delt',defaultKg:15}]}},
+      {id:'shrug',name:'Haussements épaules barre',sets:3,reps:'12-15',restSec:60,defaultKg:80,warmupKgPct:.6,note:'Monte vers les oreilles, pas de rotation.',
+       alts:{maison:[{name:'Haussements haltères',meta:'Amplitude légèrement plus grande',defaultKg:30}],salle:[{name:'Haussements poulie basse',meta:'Tension en bas',defaultKg:40}]}},
     ]
   },
   {
-    id:'jambesB', name:'Jambes B', type:'jambes',
-    desc:'Ischio-jambiers · Quadriceps · Mollets · Abdos',
-    muscles:'Ischios, fessiers, quadriceps, mollets, abdos, abducteurs',
+    id:'jambesB',name:'Jambes B',type:'jambes',
+    desc:'Ischio-jambiers · Quadriceps · Fessiers · Mollets · Abdos',
+    muscles:['ischio-jambiers','fessiers','quadriceps','mollets','abdominaux','adducteurs'],
     exercises:[
-      {
-        id:'dl2', name:'Soulevé de terre jambes tendues', sets:4, reps:'8-10', restSec:120, defaultKg:60,
-        note:'Jambes presque tendues (légèrement fléchies). Dos neutre. Ischio-jambiers +++.',
-        alts:{
-          maison:[
-            {name:'Good Morning barre', meta:'Ischios · lombaires · poids axial', defaultKg:40},
-            {name:'Ponts fessiers lestés', meta:'Fessiers + ischios · sans charge spinale', defaultKg:30},
-          ],
-          salle:[
-            {name:'Leg curl allongé machine', meta:'Isolation ischio · pas de tension lombaire', defaultKg:40},
-            {name:'Glute ham raise', meta:'Ischio excentriq · niveau avancé', defaultKg:0},
-          ]
-        }
-      },
-      {
-        id:'sq_sumo', name:'Squat Sumo haltère (goblet)', sets:3, reps:'10-12', restSec:90, defaultKg:28,
-        note:'Pieds à 45°, largeur ample. Haltère devant le buste. Fessiers + adducteurs.',
-        alts:{
-          maison:[
-            {name:'Squat sumo barre', meta:'Plus lourd · même patron', defaultKg:70},
-            {name:'Plie squat haltères', meta:'Idem sumo · excellent pour adducteurs', defaultKg:26},
-          ],
-          salle:[
-            {name:'Adducteur machine', meta:'Isolation adducteurs · assis', defaultKg:35},
-            {name:'Leg press pieds écartés', meta:'Adducteurs + fessiers dominant', defaultKg:100},
-          ]
-        }
-      },
-      {
-        id:'hip_b', name:'Hip thrust barre (sol)', sets:4, reps:'10-12', restSec:90, defaultKg:60,
-        note:'Dos appuyé sur le banc ou le canapé. Barre sur les hanches avec serviette. Contracte les fessiers en haut.',
-        alts:{
-          maison:[
-            {name:'Hip thrust haltère', meta:'Même mouvement · charge plus légère', defaultKg:24},
-            {name:'Ponts fessiers un jambe', meta:'Poids du corps · bon pour fessiers', defaultKg:0},
-          ],
-          salle:[
-            {name:'Hip thrust machine', meta:'Guidé · charge lourde', defaultKg:80},
-            {name:'Câble kickback', meta:'Fessier · extension de hanche', defaultKg:10},
-          ]
-        }
-      },
-      {
-        id:'mollet_a', name:'Mollets assis haltères', sets:4, reps:'15-20', restSec:45, defaultKg:22,
-        note:'Assis sur un banc. Haltères sur les genoux. Soléaire dominant.',
-        alts:{
-          maison:[
-            {name:'Mollets debout barre', meta:'Gastrocnémien · debout', defaultKg:60},
-            {name:'Mollets 1 jambe (marche)', meta:'Excellent · balance et amplitude', defaultKg:0},
-          ],
-          salle:[
-            {name:'Machine mollets assis', meta:'Charge lourde · guidé', defaultKg:50},
-            {name:'Machine mollets debout', meta:'Gastrocnémien · position debout', defaultKg:80},
-          ]
-        }
-      },
-      {
-        id:'abs_cr', name:'Chaise romaine — obliques', sets:3, reps:'12/côté', restSec:60, defaultKg:0,
-        note:'Rotation contrôlée du buste. Ou relevés de jambes avec twist latéral.',
-        alts:{
-          maison:[
-            {name:'Crunchs obliques au sol', meta:'Simple · focus latéral', defaultKg:0},
-            {name:'Russian twist haltère', meta:'Rotation · obliques +++', defaultKg:8},
-          ],
-          salle:[
-            {name:'Câble obliques', meta:'Tension constante · rotation', defaultKg:15},
-            {name:'Decline crunch', meta:'Amplitude maximale · abdos complets', defaultKg:0},
-          ]
-        }
-      },
+      {id:'dl2',name:'Soulevé de terre jambes tendues',sets:4,reps:'8-10',restSec:120,defaultKg:60,warmupKgPct:.5,note:'Dos neutre, ischios en tension.',
+       alts:{maison:[{name:'Good Morning barre',meta:'Ischios + lombaires',defaultKg:40},{name:'Ponts fessiers lestés',meta:'Sans charge spinale',defaultKg:30}],salle:[{name:'Leg curl allongé machine',meta:'Isolation ischio',defaultKg:40}]}},
+      {id:'sq_sumo',name:'Squat Sumo goblet haltère',sets:3,reps:'10-12',restSec:90,defaultKg:28,warmupKgPct:.5,note:'Pieds à 45°, fessiers + adducteurs.',
+       alts:{maison:[{name:'Squat sumo barre',meta:'Plus lourd',defaultKg:70}],salle:[{name:'Adducteur machine',meta:'Isolation',defaultKg:35},{name:'Leg press pieds écartés',meta:'Adducteurs + fessiers',defaultKg:100}]}},
+      {id:'hip_b',name:'Hip thrust barre (sol/banc)',sets:4,reps:'10-12',restSec:90,defaultKg:60,warmupKgPct:.5,note:'Barre sur hanches avec serviette.',
+       alts:{maison:[{name:'Hip thrust haltère',meta:'Même mouvement',defaultKg:24},{name:'Pont fessiers 1 jambe',meta:'Poids du corps',defaultKg:0}],salle:[{name:'Hip thrust machine',meta:'Charge lourde',defaultKg:80}]}},
+      {id:'mollet_a',name:'Mollets assis haltères',sets:4,reps:'15-20',restSec:45,defaultKg:22,warmupKgPct:0,note:'Soléaire dominant. Assis sur banc.',
+       alts:{maison:[{name:'Mollets debout barre',meta:'Gastrocnémien',defaultKg:60}],salle:[{name:'Machine mollets assis',meta:'Charge lourde',defaultKg:50}]}},
+      {id:'abs_cr',name:'Chaise romaine — obliques',sets:3,reps:'12/côté',restSec:60,defaultKg:0,warmupKgPct:0,note:'Rotation contrôlée du buste.',
+       alts:{maison:[{name:'Russian twist haltère',meta:'Rotation + obliques',defaultKg:8},{name:'Crunchs obliques sol',meta:'Simple',defaultKg:0}],salle:[{name:'Câble obliques',meta:'Tension constante',defaultKg:15}]}},
     ]
   }
 ];
 
-/* ═══ STORAGE ═══ */
-const LS = (k,d) => { try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d}catch{return d} };
-const SS = (k,v) => { try{localStorage.setItem(k,JSON.stringify(v))}catch{} };
+/* ══ MUSCLES RECOVERY MAP ══ */
+const MUSCLE_RECOVERY_HOURS = {
+  'pectoraux':72,'dos':72,'épaules':48,'triceps':48,'biceps':48,
+  'trapèzes':48,'quadriceps':72,'ischio-jambiers':72,'fessiers':72,
+  'mollets':48,'abdominaux':24,'adducteurs':48
+};
 
-let nextIdx   = LS('tf_next',0);
-let history   = LS('tf_hist',[]);
-let weights   = LS('tf_wts',{});
-let setsLog   = LS('tf_log',{});
-const CIRC    = 2*Math.PI*88; // r=88
+/* ══ STORAGE ══ */
+const LS=(k,d)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d}catch{return d}};
+const SS=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
 
-/* ═══ SESSION STATE ═══ */
-let curSess=null, sessStart=null, setsDone={}, setWts={}, activeExoNames={};
-let restIv=null, restRem=0, restTot=0;
-let altExoId=null; // which exercise has alt panel open
+let nextIdx=LS('tf_next',0);
+let history=LS('tf_hist',[]);
+let weights=LS('tf_wts',{});
+let setsLog=LS('tf_log',{});
+const CIRC=2*Math.PI*88;
 
-/* ═══ NAV ═══ */
+/* ══ SESSION STATE ══ */
+let curSess=null,sessStart=null,setsDone={},setWts={},setReps={},activeExoNames={};
+let restEndTime=null,restTotalSec=0,restIv=null;
+let extraExos=[];
+let finSuggestions=[];
+
+/* ══ NAV ══ */
 document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>{
   const s=b.dataset.screen;
   if(s==='session'&&curSess){showScreen('session');return}
-  if(s!=='session') showScreen(s);
+  if(s!=='session')showScreen(s);
 }));
-
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id==='screen-'+name));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.screen===name));
-  if(name==='history') renderHistory();
-  if(name==='progress') renderProgress();
-  if(name==='home') renderHome();
+  if(name==='history')renderHistory();
+  if(name==='progress')renderProgress();
+  if(name==='home')renderHome();
 }
 
-/* ═══ HOME ═══ */
+/* ══ RECOVERY CALC ══ */
+function getMuscleRecovery(){
+  const now=Date.now();
+  const result={};
+  // find last time each muscle was trained
+  const lastTrained={};
+  [...history].sort((a,b)=>new Date(a.date)-new Date(b.date)).forEach(h=>{
+    const sess=PROGRAM.find(p=>p.id===h.id);
+    if(sess) sess.muscles.forEach(m=>{lastTrained[m]=new Date(h.date).getTime()+(h.duration||0)*60000});
+  });
+  Object.keys(MUSCLE_RECOVERY_HOURS).forEach(m=>{
+    if(!lastTrained[m]){result[m]=100;return}
+    const hours=(now-lastTrained[m])/3600000;
+    const total=MUSCLE_RECOVERY_HOURS[m];
+    result[m]=Math.min(100,Math.round((hours/total)*100));
+  });
+  return result;
+}
+
+function getRecoveryColor(pct){
+  if(pct>=80)return'#4DFFB4';
+  if(pct>=50)return'#FFB84D';
+  return'#FF4D6D';
+}
+
+/* ══ HOME ══ */
 function renderHome(){
   const s=PROGRAM[nextIdx];
   document.getElementById('next-name').textContent=s.name;
@@ -635,26 +487,53 @@ function renderHome(){
     for(const h of sorted){const d=new Date(h.date);d.setHours(0,0,0,0);const df=(chk-d)/86400000;if(df<=1){streak++;chk=d}else break}
   }
   document.getElementById('st-streak').textContent=streak;
+
+  // Recovery
+  const rec=getMuscleRecovery();
+  const grid=document.getElementById('recovery-grid');
+  grid.innerHTML=Object.entries(rec).map(([m,pct])=>`
+    <div class="recovery-card">
+      <div class="rc-name">${m.charAt(0).toUpperCase()+m.slice(1)}</div>
+      <div class="recovery-bar-wrap"><div class="recovery-bar-fill" style="width:${pct}%;background:${getRecoveryColor(pct)}"></div></div>
+      <div class="recovery-pct" style="color:${getRecoveryColor(pct)}">${pct}%</div>
+      <div class="recovery-label">${pct>=80?'Prêt':'pct>=50?Partiel':'Récupération'}</div>
+    </div>`).join('');
+
+  // fix label
+  grid.querySelectorAll('.recovery-label').forEach((el,i)=>{
+    const pct=Object.values(rec)[i];
+    el.textContent=pct>=80?'✅ Prêt':pct>=50?'⚠️ Partiel':'❌ Récupération';
+  });
+
   document.getElementById('prog-list').innerHTML=PROGRAM.map((s,i)=>`
     <div class="prog-item">
-      <div class="prog-badge ${s.type}">${s.name.split(' ')[1]||s.name[0]}</div>
+      <div class="prog-badge ${s.type}">${i+1}</div>
       <div>
         <div class="pname">${s.name}${i===nextIdx?' <span style="font-size:10px;color:var(--accent)">← suivante</span>':''}</div>
-        <div class="pmuscles">${s.muscles}</div>
+        <div class="pmuscles">${s.muscles.join(', ')}</div>
       </div>
     </div>`).join('');
 }
 
 document.getElementById('btn-start').addEventListener('click',startSession);
 
-/* ═══ START SESSION ═══ */
+/* ══ START SESSION ══ */
 function startSession(){
   curSess=PROGRAM[nextIdx];
   sessStart=Date.now();
-  setsDone={};setWts={};activeExoNames={};
-  curSess.exercises.forEach(ex=>{
-    setsDone[ex.id]=new Array(ex.sets).fill(false);
-    setWts[ex.id]=new Array(ex.sets).fill(weights[ex.id]??ex.defaultKg);
+  setsDone={};setWts={};setReps={};activeExoNames={};extraExos=[];finSuggestions=[];
+  getAllExos().forEach(ex=>{
+    setsDone[ex.id]=new Array(ex.sets+1).fill(false); // +1 for warmup
+    setWts[ex.id]=new Array(ex.sets+1).fill(0);
+    setReps[ex.id]=new Array(ex.sets+1).fill(0);
+    // warmup weight
+    const base=weights[ex.id]??ex.defaultKg;
+    setWts[ex.id][0]=ex.warmupKgPct>0?Math.round(base*ex.warmupKgPct/2.5)*2.5:base;
+    // working sets
+    for(let i=1;i<=ex.sets;i++) setWts[ex.id][i]=base;
+    // default reps = middle of range
+    const mid=repsToNum(ex.reps);
+    for(let i=0;i<=ex.sets;i++) setReps[ex.id][i]=mid;
     activeExoNames[ex.id]=ex.name;
   });
   document.getElementById('sess-title').textContent=curSess.name;
@@ -664,118 +543,239 @@ function startSession(){
   showScreen('session');
 }
 
-/* ═══ RENDER EXERCISES ═══ */
+function getAllExos(){
+  return [...curSess.exercises,...extraExos];
+}
+
+/* ══ RENDER EXERCISES ══ */
 function renderExercises(){
+  const allExos=getAllExos();
   const c=document.getElementById('exo-container');
-  c.innerHTML=curSess.exercises.map((ex,ei)=>`
-    <div class="exercise-card" id="card-${ex.id}">
-      <div class="exo-header">
-        <div class="exo-num">${ei+1}</div>
-        <div style="flex:1">
-          <div class="exo-name" id="exoname-${ex.id}">${activeExoNames[ex.id]}</div>
-          <div class="exo-meta">${ex.sets} séries · ${ex.reps} reps · ${ex.restSec}s repos</div>
-          ${ex.note?`<div style="font-size:11px;color:var(--muted);margin-top:3px;font-style:italic">${ex.note}</div>`:''}
-          <button class="btn-alt" onclick="openAlt('${ex.id}')">⇄ Alternatives</button>
-        </div>
-      </div>
-      <table class="sets-table">
-        <thead><tr><th>Série</th><th>Charge kg</th><th>Reps</th><th></th></tr></thead>
-        <tbody>${Array.from({length:ex.sets},(_,si)=>`
-          <tr id="row-${ex.id}-${si}" class="${setsDone[ex.id][si]?'done':''}">
-            <td style="font-weight:700;color:var(--muted)">${si+1}</td>
-            <td><input class="weight-input" type="number" min="0" step="2.5" id="w-${ex.id}-${si}" value="${setWts[ex.id][si]}" onchange="chgWt('${ex.id}',${si},this.value)"/></td>
-            <td style="color:var(--muted);font-size:12px">${ex.reps}</td>
-            <td><button class="set-check ${setsDone[ex.id][si]?'set-done-check':''}" id="chk-${ex.id}-${si}" onclick="doSet('${ex.id}',${si})">${setsDone[ex.id][si]?'✓':''}</button></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`).join('');
+  c.innerHTML=allExos.map((ex,ei)=>renderExoCard(ex,ei)).join('')
+    +`<button class="btn-add-exo" onclick="openAddExo()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter un exercice
+      </button>`;
   updateProg();
 }
 
-function chgWt(id,si,v){ setWts[id][si]=parseFloat(v)||0 }
+function renderExoCard(ex,ei){
+  const base=weights[ex.id]??ex.defaultKg;
+  const suggestion=getSuggestion(ex.id,base);
+  const rows=[];
+  // warmup row
+  if(ex.warmupKgPct>0){
+    const wkg=setWts[ex.id]?.[0]??Math.round(base*ex.warmupKgPct/2.5)*2.5;
+    const done=setsDone[ex.id]?.[0]??false;
+    rows.push(`<tr id="row-${ex.id}-0" class="${done?'done':'warmup-row'}">
+      <td><span class="warmup-badge">CHAUFFE</span></td>
+      <td><input class="weight-input" type="number" min="0" step="2.5" value="${wkg}" onchange="chgWt('${ex.id}',0,this.value)"/></td>
+      <td><input class="reps-input" type="number" min="1" value="${setReps[ex.id]?.[0]??10}" onchange="chgReps('${ex.id}',0,this.value)"/></td>
+      <td><button class="set-check ${done?'set-done-check':''}" id="chk-${ex.id}-0" onclick="doSet('${ex.id}',0,true,0)">${done?'✓':''}</button></td>
+    </tr>`);
+  }
+  // working sets
+  for(let si=1;si<=ex.sets;si++){
+    const wkg=setWts[ex.id]?.[si]??base;
+    const done=setsDone[ex.id]?.[si]??false;
+    rows.push(`<tr id="row-${ex.id}-${si}" class="${done?'done':''}">
+      <td style="font-weight:700;color:var(--muted)">${si}</td>
+      <td><input class="weight-input" type="number" min="0" step="2.5" value="${wkg}" onchange="chgWt('${ex.id}',${si},this.value)"/></td>
+      <td><input class="reps-input" type="number" min="1" value="${setReps[ex.id]?.[si]??10}" onchange="chgReps('${ex.id}',${si},this.value)"/></td>
+      <td><button class="set-check ${done?'set-done-check':''}" id="chk-${ex.id}-${si}" onclick="doSet('${ex.id}',${si},false,${ex.restSec})">${done?'✓':''}</button></td>
+    </tr>`);
+  }
+  return `<div class="exercise-card" id="card-${ex.id}">
+    <div class="exo-header">
+      <div class="exo-num">${ei+1}</div>
+      <div style="flex:1">
+        <div class="exo-name" id="exoname-${ex.id}">${activeExoNames[ex.id]}</div>
+        <div class="exo-meta">${ex.sets} séries · ${ex.reps} reps · ${ex.restSec}s repos</div>
+        ${ex.note?`<div class="exo-note">${ex.note}</div>`:''}
+        ${suggestion?`<div class="suggestion-badge">📈 Essaie ${suggestion} kg cette séance</div>`:''}
+        <div class="exo-actions">
+          ${ex.alts?`<button class="btn-sm alt" onclick="openAlt('${ex.id}')">⇄ Alternatives</button>`:''}
+          <button class="btn-sm add-set" onclick="addSet('${ex.id}')">+ Série</button>
+        </div>
+      </div>
+    </div>
+    <table class="sets-table">
+      <thead><tr><th>Série</th><th>Charge kg</th><th>Reps</th><th></th></tr></thead>
+      <tbody id="tbody-${ex.id}">${rows.join('')}</tbody>
+    </table>
+  </div>`;
+}
 
-function doSet(exoId,si){
-  if(setsDone[exoId][si])return;
+function getSuggestion(exoId,currentKg){
+  const logs=setsLog[exoId];
+  if(!logs||logs.length<3)return null;
+  const last3=logs.slice(-3);
+  const allHitTarget=last3.every(l=>l.reps>=l.targetReps);
+  if(allHitTarget&&currentKg>0) return Math.round((currentKg+2.5)*4)/4;
+  return null;
+}
+
+function chgWt(id,si,v){if(!setWts[id])setWts[id]=[];setWts[id][si]=parseFloat(v)||0}
+function chgReps(id,si,v){if(!setReps[id])setReps[id]=[];setReps[id][si]=parseInt(v)||0}
+
+/* ══ ADD SET ══ */
+function addSet(exoId){
+  const ex=getAllExos().find(e=>e.id===exoId);
+  ex.sets++;
+  const newIdx=ex.sets;
+  const base=setWts[exoId]?.[newIdx-1]??weights[exoId]??ex.defaultKg;
+  if(!setWts[exoId])setWts[exoId]=[];
+  if(!setReps[exoId])setReps[exoId]=[];
+  if(!setsDone[exoId])setsDone[exoId]=[];
+  setWts[exoId][newIdx]=base;
+  setReps[exoId][newIdx]=repsToNum(ex.reps);
+  setsDone[exoId][newIdx]=false;
+  // append row
+  const tbody=document.getElementById(`tbody-${exoId}`);
+  const tr=document.createElement('tr');
+  tr.id=`row-${exoId}-${newIdx}`;
+  tr.innerHTML=`
+    <td style="font-weight:700;color:var(--muted)">${newIdx}</td>
+    <td><input class="weight-input" type="number" min="0" step="2.5" value="${base}" onchange="chgWt('${exoId}',${newIdx},this.value)"/></td>
+    <td><input class="reps-input" type="number" min="1" value="${repsToNum(ex.reps)}" onchange="chgReps('${exoId}',${newIdx},this.value)"/></td>
+    <td><button class="set-check" id="chk-${exoId}-${newIdx}" onclick="doSet('${exoId}',${newIdx},false,${ex.restSec})"></button></td>`;
+  tbody.appendChild(tr);
+  updateProg();
+}
+
+/* ══ DO SET ══ */
+function doSet(exoId,si,isWarmup,restSec){
+  if(setsDone[exoId]?.[si])return;
+  if(!setsDone[exoId])setsDone[exoId]=[];
   setsDone[exoId][si]=true;
   const row=document.getElementById(`row-${exoId}-${si}`);
-  row.classList.add('done');
+  if(row)row.classList.add('done');
   const btn=document.getElementById(`chk-${exoId}-${si}`);
-  btn.textContent='✓'; btn.classList.add('set-done-check');
+  if(btn){btn.textContent='✓';btn.classList.add('set-done-check')}
   updateProg();
   if(checkDone()){setTimeout(finishSession,400);return}
-  const ex=curSess.exercises.find(e=>e.id===exoId);
-  startRest(ex.restSec, getNextLabel(exoId,si));
+  if(!isWarmup&&restSec>0) startRest(restSec,getNextLabel(exoId,si));
+  else if(isWarmup) startRest(30,'Première série →');
 }
 
 function getNextLabel(exoId,si){
-  const exos=curSess.exercises;
-  const ei=exos.findIndex(e=>e.id===exoId);
-  if(si+1<exos[ei].sets) return `${activeExoNames[exoId]} — série ${si+2}`;
-  if(ei+1<exos.length) return `${activeExoNames[exos[ei+1].id]} — série 1`;
+  const allExos=getAllExos();
+  const ei=allExos.findIndex(e=>e.id===exoId);
+  const ex=allExos[ei];
+  if(si+1<=ex.sets) return `${activeExoNames[exoId]} — série ${si+1}`;
+  if(ei+1<allExos.length) return `${activeExoNames[allExos[ei+1].id]} — chauffe/série 1`;
   return 'Dernière série !';
 }
 
 function updateProg(){
-  const tot=curSess.exercises.reduce((a,e)=>a+e.sets,0);
-  const done=curSess.exercises.reduce((a,e)=>a+setsDone[e.id].filter(Boolean).length,0);
-  document.getElementById('prog-fill').style.width=`${(done/tot)*100}%`;
+  const allExos=getAllExos();
+  // count only working sets (si>=1)
+  const tot=allExos.reduce((a,e)=>a+e.sets,0);
+  const done=allExos.reduce((a,e)=>{
+    if(!setsDone[e.id])return a;
+    let c=0;for(let i=1;i<=e.sets;i++)if(setsDone[e.id][i])c++;
+    return a+c;
+  },0);
+  document.getElementById('prog-fill').style.width=`${tot>0?(done/tot)*100:0}%`;
 }
 
-function checkDone(){ return curSess.exercises.every(ex=>setsDone[ex.id].every(Boolean)) }
+function checkDone(){
+  return getAllExos().every(ex=>{
+    if(!setsDone[ex.id])return false;
+    for(let i=1;i<=ex.sets;i++)if(!setsDone[ex.id][i])return false;
+    return true;
+  });
+}
 
-/* ═══ ALTERNATIVES ═══ */
+/* ══ REST TIMER (heure système → continue en arrière-plan) ══ */
+function startRest(sec,nextLabel){
+  if(restIv)clearInterval(restIv);
+  restEndTime=Date.now()+sec*1000;
+  restTotalSec=sec;
+  document.getElementById('rest-next-lbl').textContent=nextLabel;
+  document.getElementById('rest-overlay').classList.add('visible');
+  tickRest();
+  restIv=setInterval(tickRest,250);
+}
+
+function tickRest(){
+  const rem=Math.max(0,Math.round((restEndTime-Date.now())/1000));
+  document.getElementById('timer-disp').textContent=rem;
+  const offset=CIRC*(1-rem/restTotalSec);
+  document.getElementById('ring-fill').style.strokeDashoffset=offset;
+  if(rem<=0){
+    clearInterval(restIv);
+    playGong();
+    setTimeout(()=>document.getElementById('rest-overlay').classList.remove('visible'),800);
+  }
+}
+
+document.getElementById('btn-skip').addEventListener('click',()=>{
+  if(restIv)clearInterval(restIv);
+  document.getElementById('rest-overlay').classList.remove('visible');
+});
+
+/* ══ GONG STYLE BOXE ══ */
+function playGong(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    // Gong: oscillateur + decay long + harmoniques
+    const master=ctx.createGain();
+    master.connect(ctx.destination);
+    master.gain.setValueAtTime(0.8,ctx.currentTime);
+    master.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+2.5);
+
+    [[220,.8],[440,.4],[880,.2],[1320,.1]].forEach(([freq,gain])=>{
+      const o=ctx.createOscillator();
+      const g=ctx.createGain();
+      o.type='sine';
+      o.frequency.value=freq;
+      g.gain.setValueAtTime(gain,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+2.5);
+      o.connect(g);g.connect(master);
+      o.start(ctx.currentTime);o.stop(ctx.currentTime+2.5);
+    });
+
+    // bref "dong" initial
+    const click=ctx.createOscillator();
+    const cg=ctx.createGain();
+    click.frequency.value=180;
+    cg.gain.setValueAtTime(1,ctx.currentTime);
+    cg.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);
+    click.connect(cg);cg.connect(ctx.destination);
+    click.start(ctx.currentTime);click.stop(ctx.currentTime+0.1);
+  }catch{}
+}
+
+/* ══ ALTERNATIVES ══ */
 function openAlt(exoId){
-  altExoId=exoId;
-  const ex=curSess.exercises.find(e=>e.id===exoId);
+  const ex=getAllExos().find(e=>e.id===exoId);
+  if(!ex||!ex.alts)return;
   document.getElementById('alt-title').textContent=activeExoNames[exoId];
-  document.getElementById('alt-sub').textContent='Choisis un exercice de remplacement';
   let html='';
-  if(ex.alts.maison&&ex.alts.maison.length){
-    html+=`<div class="alt-group-label">🏠 Maison / Domicile</div>`;
-    html+=ex.alts.maison.map((a,i)=>`
-      <div class="alt-item">
-        <div><div class="aname">${a.name}</div><div class="ameta">${a.meta}</div></div>
-        <button class="btn-pick" onclick="pickAlt('${exoId}','maison',${i})">Choisir</button>
-      </div>`).join('');
+  if(ex.alts.maison?.length){
+    html+=`<div class="modal-group-label">🏠 Maison / Domicile</div>`;
+    html+=ex.alts.maison.map((a,i)=>`<div class="modal-item"><div><div class="iname">${a.name}</div><div class="imeta">${a.meta}</div></div><button class="btn-pick" onclick="pickAlt('${exoId}','maison',${i})">Choisir</button></div>`).join('');
   }
-  if(ex.alts.salle&&ex.alts.salle.length){
-    html+=`<div class="alt-group-label">🏋️ En salle</div>`;
-    html+=ex.alts.salle.map((a,i)=>`
-      <div class="alt-item">
-        <div><div class="aname">${a.name}</div><div class="ameta">${a.meta}</div></div>
-        <button class="btn-pick" onclick="pickAlt('${exoId}','salle',${i})">Choisir</button>
-      </div>`).join('');
+  if(ex.alts.salle?.length){
+    html+=`<div class="modal-group-label">🏋️ En salle</div>`;
+    html+=ex.alts.salle.map((a,i)=>`<div class="modal-item"><div><div class="iname">${a.name}</div><div class="imeta">${a.meta}</div></div><button class="btn-pick" onclick="pickAlt('${exoId}','salle',${i})">Choisir</button></div>`).join('');
   }
-  // reset option
-  html+=`<div class="alt-group-label">↩ Exercice original</div>
-    <div class="alt-item">
-      <div><div class="aname">${ex.name}</div><div class="ameta">Exercice de base du programme</div></div>
-      <button class="btn-pick" onclick="resetAlt('${exoId}')">Remettre</button>
-    </div>`;
+  html+=`<div class="modal-group-label">↩ Original</div><div class="modal-item"><div><div class="iname">${ex.name}</div><div class="imeta">Exercice de base</div></div><button class="btn-pick" onclick="resetAlt('${exoId}')">Remettre</button></div>`;
   document.getElementById('alt-content').innerHTML=html;
   document.getElementById('alt-modal').classList.add('visible');
 }
 
 function pickAlt(exoId,cat,idx){
-  const ex=curSess.exercises.find(e=>e.id===exoId);
+  const ex=getAllExos().find(e=>e.id===exoId);
   const alt=ex.alts[cat][idx];
   activeExoNames[exoId]=alt.name;
-  // update weight to alt default if never set
-  if(!(exoId in weights)||weights[exoId]===ex.defaultKg){
-    setWts[exoId]=new Array(ex.sets).fill(alt.defaultKg);
-  }
-  // update UI
   document.getElementById(`exoname-${exoId}`).textContent=alt.name;
-  setWts[exoId].forEach((_,si)=>{
-    const inp=document.getElementById(`w-${exoId}-${si}`);
-    if(inp) inp.value=setWts[exoId][si];
-  });
   document.getElementById('alt-modal').classList.remove('visible');
 }
 
 function resetAlt(exoId){
-  const ex=curSess.exercises.find(e=>e.id===exoId);
+  const ex=getAllExos().find(e=>e.id===exoId);
   activeExoNames[exoId]=ex.name;
   document.getElementById(`exoname-${exoId}`).textContent=ex.name;
   document.getElementById('alt-modal').classList.remove('visible');
@@ -784,75 +784,92 @@ function resetAlt(exoId){
 document.getElementById('btn-close-alt').addEventListener('click',()=>document.getElementById('alt-modal').classList.remove('visible'));
 document.getElementById('alt-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('visible')});
 
-/* ═══ REST TIMER ═══ */
-function startRest(sec,nextLabel){
-  if(restIv)clearInterval(restIv);
-  restRem=sec;restTot=sec;
-  document.getElementById('rest-next-lbl').textContent=nextLabel;
-  document.getElementById('timer-disp').textContent=restRem;
-  updateRing(restRem,restTot);
-  document.getElementById('rest-overlay').classList.add('visible');
-  restIv=setInterval(()=>{
-    restRem--;
-    document.getElementById('timer-disp').textContent=restRem;
-    updateRing(restRem,restTot);
-    if(restRem<=0){clearInterval(restIv);playBeep();setTimeout(()=>document.getElementById('rest-overlay').classList.remove('visible'),600)}
-  },1000);
-}
+/* ══ ADD EXO ══ */
+function openAddExo(){document.getElementById('addexo-modal').classList.add('visible')}
+document.getElementById('btn-close-addexo').addEventListener('click',()=>document.getElementById('addexo-modal').classList.remove('visible'));
+document.getElementById('addexo-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('visible')});
 
-function updateRing(rem,tot){
-  const offset=CIRC*(1-rem/tot);
-  document.getElementById('ring-fill').style.strokeDashoffset=offset;
-}
-
-document.getElementById('btn-skip').addEventListener('click',()=>{
-  if(restIv)clearInterval(restIv);
-  document.getElementById('rest-overlay').classList.remove('visible');
+document.getElementById('btn-addexo-confirm').addEventListener('click',()=>{
+  const name=document.getElementById('addexo-name').value.trim();
+  if(!name)return;
+  const sets=parseInt(document.getElementById('addexo-sets').value)||3;
+  const reps=document.getElementById('addexo-reps').value||'10-12';
+  const kg=parseFloat(document.getElementById('addexo-kg').value)||20;
+  const rest=parseInt(document.getElementById('addexo-rest').value)||90;
+  const id='extra_'+Date.now();
+  const newExo={id,name,sets,reps,restSec:rest,defaultKg:kg,warmupKgPct:0,note:'',alts:null};
+  extraExos.push(newExo);
+  setsDone[id]=new Array(sets+1).fill(false);
+  setWts[id]=new Array(sets+1).fill(kg);
+  setReps[id]=new Array(sets+1).fill(repsToNum(reps));
+  activeExoNames[id]=name;
+  document.getElementById('addexo-modal').classList.remove('visible');
+  document.getElementById('addexo-name').value='';
+  renderExercises();
 });
 
-function playBeep(){
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    [0,.15,.3].forEach((t,i)=>{
-      const o=ctx.createOscillator(),g=ctx.createGain();
-      o.connect(g);g.connect(ctx.destination);
-      o.frequency.value=i===2?880:660;
-      g.gain.setValueAtTime(0,ctx.currentTime+t);
-      g.gain.linearRampToValueAtTime(.4,ctx.currentTime+t+.01);
-      g.gain.linearRampToValueAtTime(0,ctx.currentTime+t+.18);
-      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.2);
-    });
-  }catch{}
-}
-
-/* ═══ FINISH ═══ */
+/* ══ FINISH ══ */
 function finishSession(){
   if(restIv)clearInterval(restIv);
   document.getElementById('rest-overlay').classList.remove('visible');
   const dur=Math.round((Date.now()-sessStart)/60000);
-  const totSets=curSess.exercises.reduce((a,e)=>a+e.sets,0);
+  const allExos=getAllExos();
+  const totSets=allExos.reduce((a,e)=>a+e.sets,0);
   let totVol=0;
-  curSess.exercises.forEach(ex=>{
-    const kg=setWts[ex.id];
-    const allDone=setsDone[ex.id].every(Boolean);
-    const avg=kg.reduce((a,b)=>a+b,0)/kg.length;
-    weights[ex.id]=allDone?Math.round((avg+2.5)*4)/4:avg;
-    const mid=repsToNum(ex.reps);
-    totVol+=avg*mid*ex.sets;
+  const suggestions=[];
+
+  allExos.forEach(ex=>{
+    const allDone=setsDone[ex.id]?(()=>{for(let i=1;i<=ex.sets;i++)if(!setsDone[ex.id][i])return false;return true})():false;
+    // collect working sets stats
+    let totalKg=0,totalReps=0,count=0,maxKg=0;
+    for(let i=1;i<=ex.sets;i++){
+      const kg=setWts[ex.id]?.[i]??0;
+      const reps=setReps[ex.id]?.[i]??repsToNum(ex.reps);
+      if(setsDone[ex.id]?.[i]){totalKg+=kg;totalReps+=reps;count++;maxKg=Math.max(maxKg,kg);totVol+=kg*reps}
+    }
+    if(count===0)return;
+    const avgKg=totalKg/count;
+    const avgReps=totalReps/count;
+    const targetReps=repsToNum(ex.reps);
+
+    // save to log
     if(!setsLog[ex.id])setsLog[ex.id]=[];
-    setsDone[ex.id].forEach((done,si)=>{if(done)setsLog[ex.id].push({kg:kg[si],reps:mid,date:new Date().toISOString()})});
+    for(let i=1;i<=ex.sets;i++){
+      if(setsDone[ex.id]?.[i]){
+        setsLog[ex.id].push({kg:setWts[ex.id][i]??avgKg,reps:setReps[ex.id][i]??targetReps,targetReps,date:new Date().toISOString()});
+      }
+    }
+
+    // save weight
+    weights[ex.id]=avgKg;
+
+    // suggestion: if avg reps >= top of range → +2.5kg
+    const [rLow,rHigh]=parseRepsRange(ex.reps);
+    if(avgReps>=rHigh&&allDone){
+      const newKg=Math.round((avgKg+2.5)*4)/4;
+      suggestions.push({name:activeExoNames[ex.id],old:avgKg,new:newKg});
+      weights[ex.id]=newKg;
+    }
   });
+
   SS('tf_wts',weights);SS('tf_log',setsLog);
-  history.push({id:curSess.id,name:curSess.name,type:curSess.type,date:new Date().toISOString().split('T')[0],sets:totSets,volume:Math.round(totVol),duration:dur});
+  history.push({id:curSess.id,name:curSess.name,type:curSess.type,muscles:curSess.muscles,date:new Date().toISOString().split('T')[0],sets:totSets,volume:Math.round(totVol),duration:dur});
   SS('tf_hist',history);
   nextIdx=(nextIdx+1)%4;SS('tf_next',nextIdx);
+
   document.getElementById('fin-sets').textContent=totSets;
   document.getElementById('fin-vol').textContent=Math.round(totVol);
   document.getElementById('fin-time').textContent=dur;
+
+  if(suggestions.length){
+    document.getElementById('fin-suggestions').style.display='';
+    document.getElementById('fin-sug-list').innerHTML=suggestions.map(s=>`<div class="sug-item"><span class="sname">${s.name}</span><span class="snew">${s.old}kg → ${s.new}kg</span></div>`).join('');
+  } else {
+    document.getElementById('fin-suggestions').style.display='none';
+  }
+
   document.getElementById('finish-overlay').classList.add('visible');
 }
-
-function repsToNum(s){const m=s.match(/(\d+)/g);if(!m)return 10;return m.reduce((a,b)=>a+parseInt(b),0)/m.length}
 
 document.getElementById('btn-fin-ok').addEventListener('click',()=>{
   document.getElementById('finish-overlay').classList.remove('visible');
@@ -861,9 +878,9 @@ document.getElementById('btn-fin-ok').addEventListener('click',()=>{
   renderHome();showScreen('home');
 });
 
-/* ═══ BACK ═══ */
+/* ══ BACK ══ */
 document.getElementById('btn-back').addEventListener('click',()=>{
-  if(confirm('Abandonner la séance ? Progression non sauvegardée.')){
+  if(confirm('Abandonner la séance ?')){
     if(restIv)clearInterval(restIv);
     document.getElementById('rest-overlay').classList.remove('visible');
     curSess=null;
@@ -872,24 +889,21 @@ document.getElementById('btn-back').addEventListener('click',()=>{
   }
 });
 
-/* ═══ HISTORY ═══ */
+/* ══ HISTORY ══ */
 function renderHistory(){
   const list=document.getElementById('hist-list');
   if(!history.length){list.innerHTML=`<div class="empty-state"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><p>Aucune séance enregistrée.</p></div>`;return}
   list.innerHTML=[...history].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=>`
     <div class="history-item">
       <div class="hist-dot ${h.type}"></div>
-      <div class="hist-info">
-        <div class="hname">${h.name}</div>
-        <div class="hdate">${fmtDate(h.date)} · ${h.duration} min · ${h.volume} kg vol.</div>
-      </div>
+      <div class="hist-info"><div class="hname">${h.name}</div><div class="hdate">${fmtDate(h.date)} · ${h.duration} min · ${h.volume} kg vol.</div></div>
       <div class="hist-sets">${h.sets}<span style="font-size:10px;color:var(--muted);margin-left:2px">s.</span></div>
     </div>`).join('');
 }
 
 function fmtDate(iso){return new Date(iso).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}
 
-/* ═══ PROGRESS ═══ */
+/* ══ PROGRESS ══ */
 function renderProgress(){
   const c=document.getElementById('pr-container');
   if(!Object.keys(setsLog).length){c.innerHTML=`<div class="empty-state"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><p>Complète ta première séance pour voir tes progrès.</p></div>`;return}
@@ -897,9 +911,9 @@ function renderProgress(){
   PROGRAM.forEach(sess=>{
     const has=sess.exercises.some(ex=>setsLog[ex.id]?.length);
     if(!has)return;
-    html+=`<div class="section-title" style="margin-top:14px">${sess.name} — ${sess.desc}</div>`;
+    html+=`<div class="section-title" style="margin-top:14px">${sess.name}</div>`;
     sess.exercises.forEach(ex=>{
-      const logs=setsLog[ex.id];if(!logs||!logs.length)return;
+      const logs=setsLog[ex.id];if(!logs?.length)return;
       const maxKg=Math.max(...logs.map(l=>l.kg));
       const last5=logs.slice(-5);const avg5=last5.reduce((a,l)=>a+l.kg,0)/last5.length;
       const delta=maxKg-(logs[0].kg);
@@ -907,7 +921,7 @@ function renderProgress(){
         <div class="pr-name">${ex.name}</div>
         <div class="pr-row"><span>Record</span><span class="pr-val">${maxKg} kg</span></div>
         <div class="pr-row"><span>Moy. 5 dernières</span><span class="pr-val">${avg5.toFixed(1)} kg</span></div>
-        <div class="pr-row"><span>Progression</span><span class="pr-delta">+${delta.toFixed(1)} kg</span></div>
+        <div class="pr-row"><span>Progression totale</span><span class="pr-delta">+${delta.toFixed(1)} kg</span></div>
         <div class="pr-row"><span>Séries enregistrées</span><span class="pr-val">${logs.length}</span></div>
       </div>`;
     });
@@ -915,9 +929,13 @@ function renderProgress(){
   c.innerHTML=html;
 }
 
-/* ═══ INIT ═══ */
+/* ══ UTILS ══ */
+function repsToNum(s){const m=s.match(/(\d+)/g);if(!m)return 10;return Math.round(m.reduce((a,b)=>a+parseInt(b),0)/m.length)}
+function parseRepsRange(s){const m=s.match(/(\d+)/g);if(!m||m.length<2)return[10,12];return[parseInt(m[0]),parseInt(m[1])]}
+
+/* ══ INIT ══ */
 renderHome();
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
