@@ -496,7 +496,7 @@ function renderHome(){
       <div class="rc-name">${m.charAt(0).toUpperCase()+m.slice(1)}</div>
       <div class="recovery-bar-wrap"><div class="recovery-bar-fill" style="width:${pct}%;background:${getRecoveryColor(pct)}"></div></div>
       <div class="recovery-pct" style="color:${getRecoveryColor(pct)}">${pct}%</div>
-      <div class="recovery-label">${pct>=80?'Prêt':'pct>=50?Partiel':'Récupération'}</div>
+      <div class="recovery-label">${pct>=80?'✅ Prêt':pct>=50?'⚠️ Partiel':'❌ Récup.'}</div>
     </div>`).join('');
 
   // fix label
