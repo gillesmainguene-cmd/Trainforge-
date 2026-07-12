@@ -480,6 +480,35 @@
     .pr-v { color: var(--text); font-weight: 600; }
     .pr-up { color: var(--lime); font-weight: 700; font-size: 11px; }
 
+    /* EXERCISE LIBRARY */
+    .ae-group-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; background: var(--s2); border-radius: 10px;
+      padding: 13px 14px; margin-bottom: 6px; transition: background .12s;
+    }
+    .ae-group-btn:active { background: var(--border); }
+    .ae-group-left { display: flex; align-items: center; gap: 10px; }
+    .ae-group-icon { font-size: 20px; width: 32px; text-align: center; }
+    .ae-group-name { font-weight: 600; font-size: 14px; }
+    .ae-group-count { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .ae-group-arrow { color: var(--muted); }
+
+    .ae-exo-card {
+      background: var(--s2); border-radius: 10px; padding: 12px 14px;
+      margin-bottom: 6px; cursor: pointer; transition: background .12s;
+      border: 1px solid transparent;
+    }
+    .ae-exo-card:active { border-color: var(--lime); background: rgba(212,255,0,.05); }
+    .ae-exo-name { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+    .ae-exo-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .ae-tag {
+      font-size: 10px; font-weight: 600; padding: 2px 7px;
+      border-radius: 10px; letter-spacing: .5px;
+    }
+    .ae-tag.home { background: rgba(0,229,200,.1); color: var(--teal); }
+    .ae-tag.gym { background: rgba(212,255,0,.1); color: var(--lime); }
+    .ae-tag.tempo { background: rgba(245,166,35,.1); color: var(--amber); }
+
     .empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted); text-align: center; padding-bottom: 60px; }
     .empty svg { opacity: .25; }
     .empty p { font-size: 13px; }
@@ -673,20 +702,55 @@
 
 <!-- ADD EXO MODAL -->
 <div class="modal" id="add-modal">
-  <div class="modal-sheet">
+  <div class="modal-sheet" style="max-height:92dvh">
     <h3>Ajouter un exercice</h3>
-    <div class="modal-sub">Exercice supplementaire</div>
-    <input class="add-inp" id="ae-name" placeholder="Nom"/>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-      <input class="add-inp" id="ae-sets" type="number" value="3" style="margin-bottom:0" placeholder="Series"/>
-      <input class="add-inp" id="ae-reps" value="10-12" style="margin-bottom:0" placeholder="Reps"/>
+    <div class="modal-sub" id="ae-step-lbl">Choisis un groupe musculaire</div>
+
+    <!-- STEP 1 : groupe musculaire -->
+    <div id="ae-step1">
+      <div id="ae-groups"></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-      <input class="add-inp" id="ae-kg" type="number" value="20" step="2.5" style="margin-bottom:0" placeholder="kg"/>
-      <input class="add-inp" id="ae-rest" type="number" value="90" step="15" style="margin-bottom:0" placeholder="Repos sec"/>
+
+    <!-- STEP 2 : liste exercices -->
+    <div id="ae-step2" style="display:none">
+      <button style="display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;margin-bottom:12px;padding:4px 0" onclick="aeBack()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        Retour
+      </button>
+      <div id="ae-exo-list"></div>
     </div>
-    <button class="btn-add-ok" id="ae-ok">Ajouter →</button>
-    <button class="btn-close" id="btn-close-add">Annuler</button>
+
+    <!-- STEP 3 : config -->
+    <div id="ae-step3" style="display:none">
+      <button style="display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;margin-bottom:12px;padding:4px 0" onclick="aeBack2()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        Retour
+      </button>
+      <div id="ae-selected-name" style="font-family:var(--fh);font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;color:var(--lime)"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Series</div>
+          <input class="add-inp" id="ae-sets" type="number" value="3" style="margin-bottom:0"/>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Reps cibles</div>
+          <input class="add-inp" id="ae-reps" value="10-12" style="margin-bottom:0"/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Charge (kg)</div>
+          <input class="add-inp" id="ae-kg" type="number" value="20" step="2.5" style="margin-bottom:0"/>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Repos (sec)</div>
+          <input class="add-inp" id="ae-rest" type="number" value="90" step="15" style="margin-bottom:0"/>
+        </div>
+      </div>
+      <button class="btn-add-ok" id="ae-ok">Ajouter a la seance →</button>
+    </div>
+
+    <button class="btn-close" id="btn-close-add">Fermer</button>
   </div>
 </div>
 
@@ -825,20 +889,86 @@ let activeNames={}, extras=[], sessRir={}, sessFeel=2, sessNote='';
 let restEnd=null, restTotal=0, restIv=null, pendingRir=null;
 
 /* ══ AUDIO / HAPTIC ══ */
-let gong=null, audioOk=false;
-function initAudio(){
-  if(audioOk)return;
-  gong=new Audio('gong.mp3'); gong.load();
-  const p=gong.play();
-  if(p)p.then(()=>{gong.pause();gong.currentTime=0;audioOk=true}).catch(()=>{});
-  else audioOk=true;
+// On crée l'AudioContext une seule fois au premier tap utilisateur.
+// On NE joue PAS de fichier Audio() pour éviter de couper la session musicale iOS.
+// Le Web Audio API avec des oscillateurs courts ne prend pas le contrôle exclusif.
+let _actx = null;
+
+function getCtx(){
+  if(!_actx){
+    _actx = new (window.AudioContext||window.webkitAudioContext)({
+      latencyHint: 'interactive'
+    });
+  }
+  // Resume si suspendu sans forcer la main-mise audio
+  if(_actx.state === 'suspended'){
+    _actx.resume().catch(()=>{});
+  }
+  return _actx;
 }
-document.addEventListener('touchstart',initAudio,{once:true});
-document.addEventListener('click',initAudio,{once:true});
+
+// Pré-initialise le contexte au premier tap (obligatoire iOS)
+function unlockCtx(){
+  try {
+    const ctx = getCtx();
+    // Joue un silence de 0.001s pour débloquer iOS sans interrompre la musique
+    const buf = ctx.createBuffer(1, 1, 22050);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start(0);
+  } catch(e){}
+}
+document.addEventListener('touchstart', unlockCtx, {once:true});
+document.addEventListener('click', unlockCtx, {once:true});
+
 function playGong(){
-  if(gong){gong.currentTime=0;gong.play().catch(()=>{})}
-  else try{new Audio('gong.mp3').play().catch(()=>{})}catch{}
-  if(navigator.vibrate) navigator.vibrate([200,100,200,100,400]);
+  try {
+    const ctx = getCtx();
+    const now = ctx.currentTime;
+
+    // Son court style "ding" boxe — 3 harmoniques, decay rapide (0.8s max)
+    // Court = ne prend pas le contrôle de la session audio iOS
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.5, now);
+    master.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+    master.connect(ctx.destination);
+
+    [[220, 0.8, 0.6], [440, 0.5, 0.5], [880, 0.3, 0.4]].forEach(([f, a, d]) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(a, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + d);
+      o.connect(g);
+      g.connect(master);
+      o.start(now);
+      o.stop(now + d);
+    });
+
+    // 2e ding 0.15s après pour effet boxe
+    const master2 = ctx.createGain();
+    master2.gain.setValueAtTime(0.35, now + 0.15);
+    master2.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+    master2.connect(ctx.destination);
+    [[330, 0.7, 0.5], [660, 0.4, 0.4]].forEach(([f, a, d]) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(a, now + 0.15);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.15 + d);
+      o.connect(g);
+      g.connect(master2);
+      o.start(now + 0.15);
+      o.stop(now + 0.15 + d);
+    });
+
+  } catch(e){ console.log('Audio error', e); }
+
+  // Vibration haptique (complément si volume bas)
+  if(navigator.vibrate) navigator.vibrate([150, 80, 250]);
 }
 
 /* ══ NAV ══ */
@@ -1237,26 +1367,218 @@ function resetAlt(id){
 document.getElementById('btn-close-alt').addEventListener('click',()=>document.getElementById('alt-modal').classList.remove('on'));
 document.getElementById('alt-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on')});
 
-/* ══ ADD EXO ══ */
-function openAddModal(){document.getElementById('add-modal').classList.add('on')}
+/* ══ BIBLIOTHEQUE D'EXERCICES ══ */
+const EXLIB = [
+  { group:'Pectoraux', icon:'💪', exos:[
+    {n:'Developpé couché barre',     rest:120, kg:60,  reps:[8,12],  tempo:'3-1-1', tags:['Maison','Salle']},
+    {n:'Developpé halteres couché',  rest:90,  kg:22,  reps:[8,12],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Developpé incliné barre',    rest:90,  kg:50,  reps:[8,12],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Developpé incliné halteres', rest:90,  kg:20,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Pompes lestées',             rest:75,  kg:10,  reps:[10,15], tempo:'3-1-1', tags:['Maison']},
+    {n:'Developpé décliné halteres', rest:90,  kg:22,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Pull-over haltere',          rest:75,  kg:16,  reps:[10,15], tempo:'3-1-1', tags:['Maison']},
+    {n:'Developpé convergent machine',rest:90, kg:50,  reps:[10,12], tempo:'2-1-1', tags:['Salle']},
+    {n:'Câble croisé bas',           rest:60,  kg:15,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+    {n:'Câble croisé haut',          rest:60,  kg:12,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+    {n:'Pec deck machine',           rest:60,  kg:40,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+  ]},
+  { group:'Dos', icon:'🔙', exos:[
+    {n:'Soulevé de terre barre',     rest:180, kg:100, reps:[5,6],   tempo:'2-1-1', tags:['Maison']},
+    {n:'Rowing barre',               rest:120, kg:60,  reps:[8,12],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Rowing haltere 1 bras',      rest:90,  kg:24,  reps:[8,12],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Rowing halteres buste penché',rest:90, kg:20,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Good Morning barre',         rest:90,  kg:40,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Tractions pronation',        rest:120, kg:0,   reps:[6,10],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Tractions supination',       rest:120, kg:0,   reps:[6,10],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Tractions prise neutre',     rest:120, kg:0,   reps:[6,10],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Rack pull depuis genoux',    rest:150, kg:120, reps:[5,6],   tempo:'2-1-1', tags:['Maison','Salle']},
+    {n:'Rowing T-bar',               rest:120, kg:40,  reps:[8,12],  tempo:'3-1-1', tags:['Salle']},
+    {n:'Rowing poulie basse',        rest:90,  kg:50,  reps:[10,12], tempo:'3-1-1', tags:['Salle']},
+    {n:'Lat pulldown large prise',   rest:90,  kg:50,  reps:[10,12], tempo:'3-1-1', tags:['Salle']},
+    {n:'Lat pulldown prise neutre',  rest:90,  kg:45,  reps:[10,12], tempo:'3-1-1', tags:['Salle']},
+  ]},
+  { group:'Épaules', icon:'🏋️', exos:[
+    {n:'Developpé militaire barre',  rest:90,  kg:40,  reps:[10,12], tempo:'2-1-1', tags:['Maison']},
+    {n:'Developpé militaire halteres',rest:90, kg:16,  reps:[10,12], tempo:'2-1-1', tags:['Maison']},
+    {n:'Élévations latérales halteres',rest:60,kg:8,   reps:[12,15], tempo:'2-1-2', tags:['Maison']},
+    {n:'Oiseau halteres rear delt',  rest:60,  kg:8,   reps:[12,15], tempo:'2-1-2', tags:['Maison']},
+    {n:'Developpé Arnold',           rest:90,  kg:14,  reps:[10,12], tempo:'2-1-1', tags:['Maison']},
+    {n:'Upright row barre',          rest:75,  kg:30,  reps:[10,12], tempo:'2-1-2', tags:['Maison']},
+    {n:'Upright row halteres',       rest:75,  kg:12,  reps:[10,12], tempo:'2-1-2', tags:['Maison']},
+    {n:'Face pull élastique',        rest:60,  kg:0,   reps:[12,15], tempo:'2-1-2', tags:['Maison']},
+    {n:'Presse epaules machine',     rest:90,  kg:30,  reps:[10,12], tempo:'2-1-1', tags:['Salle']},
+    {n:'Élévations latérales câble', rest:60,  kg:8,   reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+    {n:'Face pull câble corde',      rest:60,  kg:15,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+    {n:'Pec deck inverse machine',   rest:60,  kg:20,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+  ]},
+  { group:'Biceps', icon:'💪', exos:[
+    {n:'Curl barre',                 rest:75,  kg:30,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Curl halteres alternes',     rest:75,  kg:12,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Curl marteau halteres',      rest:75,  kg:14,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Curl concentration haltere', rest:60,  kg:12,  reps:[10,15], tempo:'3-1-1', tags:['Maison']},
+    {n:'Curl barre EZ',              rest:75,  kg:25,  reps:[10,12], tempo:'3-1-1', tags:['Maison','Salle']},
+    {n:'Curl pupitre EZ',            rest:75,  kg:25,  reps:[10,12], tempo:'3-1-1', tags:['Salle']},
+    {n:'Curl câble bas',             rest:60,  kg:15,  reps:[12,15], tempo:'3-1-1', tags:['Salle']},
+    {n:'Curl spider bench',          rest:75,  kg:20,  reps:[10,12], tempo:'3-1-1', tags:['Salle']},
+  ]},
+  { group:'Triceps', icon:'💪', exos:[
+    {n:'Dips banc ou chaise',        rest:75,  kg:0,   reps:[10,15], tempo:'3-1-1', tags:['Maison']},
+    {n:'Extension triceps barre',    rest:75,  kg:25,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Extension triceps haltere 1 bras',rest:60,kg:12,reps:[10,15],tempo:'3-1-1', tags:['Maison']},
+    {n:'Skull crusher barre EZ',     rest:75,  kg:25,  reps:[10,12], tempo:'3-1-1', tags:['Maison','Salle']},
+    {n:'Diamond push-ups',           rest:60,  kg:0,   reps:[10,15], tempo:'3-1-1', tags:['Maison']},
+    {n:'Triceps poulie haute corde', rest:60,  kg:20,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+    {n:'Triceps poulie haute barre', rest:60,  kg:20,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+    {n:'Dips parallèles lestés',     rest:90,  kg:10,  reps:[8,12],  tempo:'3-1-1', tags:['Salle']},
+  ]},
+  { group:'Trapèzes', icon:'🎯', exos:[
+    {n:'Haussements epaules barre',  rest:60,  kg:80,  reps:[12,15], tempo:'1-2-1', tags:['Maison']},
+    {n:'Haussements epaules halteres',rest:60, kg:30,  reps:[12,15], tempo:'1-2-1', tags:['Maison']},
+    {n:'Rowing menton barre',        rest:75,  kg:30,  reps:[10,12], tempo:'2-1-2', tags:['Maison']},
+    {n:'Haussements poulie basse',   rest:60,  kg:40,  reps:[12,15], tempo:'1-2-1', tags:['Salle']},
+    {n:'Haussements Smith Machine',  rest:60,  kg:60,  reps:[12,15], tempo:'1-2-1', tags:['Salle']},
+  ]},
+  { group:'Quadriceps', icon:'🦵', exos:[
+    {n:'Squat barre',                rest:150, kg:80,  reps:[8,10],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Goblet squat haltere',       rest:90,  kg:24,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Squat halteres',             rest:90,  kg:30,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Fentes marchées halteres',   rest:90,  kg:18,  reps:[10,12], tempo:'2-1-1', tags:['Maison']},
+    {n:'Fentes statiques barre',     rest:90,  kg:50,  reps:[10,12], tempo:'2-1-1', tags:['Maison']},
+    {n:'Split squat bulgare halteres',rest:90, kg:16,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Step up halteres',           rest:75,  kg:16,  reps:[10,12], tempo:'2-1-1', tags:['Maison']},
+    {n:'Leg press',                  rest:120, kg:120, reps:[10,12], tempo:'3-1-1', tags:['Salle']},
+    {n:'Hack squat machine',         rest:120, kg:60,  reps:[10,12], tempo:'3-1-1', tags:['Salle']},
+    {n:'Extension quadriceps machine',rest:75, kg:40,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+    {n:'Fentes Smith Machine',       rest:90,  kg:40,  reps:[10,12], tempo:'2-1-1', tags:['Salle']},
+  ]},
+  { group:'Ischio-jambiers', icon:'🦵', exos:[
+    {n:'Romanian Deadlift barre',    rest:120, kg:70,  reps:[8,12],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Romanian Deadlift halteres', rest:90,  kg:26,  reps:[8,12],  tempo:'3-1-1', tags:['Maison']},
+    {n:'SDT jambes tendues barre',   rest:120, kg:60,  reps:[8,12],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Good Morning barre',         rest:90,  kg:40,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Glute ham raise',            rest:90,  kg:0,   reps:[6,10],  tempo:'3-1-1', tags:['Maison']},
+    {n:'Nordic curl',                rest:120, kg:0,   reps:[4,8],   tempo:'4-0-1', tags:['Maison']},
+    {n:'Leg curl allongé machine',   rest:75,  kg:35,  reps:[10,15], tempo:'3-1-2', tags:['Salle']},
+    {n:'Leg curl assis machine',     rest:75,  kg:30,  reps:[10,15], tempo:'3-1-2', tags:['Salle']},
+  ]},
+  { group:'Fessiers', icon:'🍑', exos:[
+    {n:'Hip thrust barre',           rest:90,  kg:60,  reps:[10,12], tempo:'1-2-1', tags:['Maison']},
+    {n:'Hip thrust haltere',         rest:75,  kg:24,  reps:[10,12], tempo:'1-2-1', tags:['Maison']},
+    {n:'Pont fessiers lestés',       rest:75,  kg:30,  reps:[12,15], tempo:'1-2-1', tags:['Maison']},
+    {n:'Pont fessiers 1 jambe',      rest:60,  kg:0,   reps:[10,15], tempo:'1-2-1', tags:['Maison']},
+    {n:'Squat sumo goblet haltere',  rest:90,  kg:28,  reps:[10,12], tempo:'3-1-1', tags:['Maison']},
+    {n:'Donkey kicks lestés',        rest:60,  kg:5,   reps:[12,15], tempo:'1-1-1', tags:['Maison']},
+    {n:'Hip thrust machine',         rest:90,  kg:80,  reps:[10,12], tempo:'1-2-1', tags:['Salle']},
+    {n:'Câble kickback',             rest:60,  kg:10,  reps:[12,15], tempo:'1-1-1', tags:['Salle']},
+    {n:'Abducteur machine',          rest:60,  kg:35,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+  ]},
+  { group:'Mollets', icon:'🦶', exos:[
+    {n:'Mollets debout halteres',    rest:45,  kg:24,  reps:[12,15], tempo:'2-1-2', tags:['Maison']},
+    {n:'Mollets debout barre',       rest:45,  kg:60,  reps:[12,15], tempo:'2-1-2', tags:['Maison']},
+    {n:'Mollets 1 jambe poids corps',rest:45,  kg:0,   reps:[12,15], tempo:'2-1-2', tags:['Maison']},
+    {n:'Mollets assis halteres',     rest:45,  kg:22,  reps:[12,15], tempo:'2-1-2', tags:['Maison']},
+    {n:'Machine mollets debout',     rest:45,  kg:80,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+    {n:'Machine mollets assis',      rest:45,  kg:50,  reps:[12,15], tempo:'2-1-2', tags:['Salle']},
+    {n:'Leg press mollets',          rest:45,  kg:100, reps:[15,20], tempo:'2-1-2', tags:['Salle']},
+  ]},
+  { group:'Abdominaux', icon:'🎯', exos:[
+    {n:'Chaise romaine relevés jambes',rest:60,kg:0,   reps:[12,15], tempo:'2-1-2', tags:['Maison']},
+    {n:'Chaise romaine obliques',    rest:60,  kg:0,   reps:[12,12], tempo:'2-1-2', tags:['Maison']},
+    {n:'Crunchs au sol',             rest:45,  kg:0,   reps:[15,20], tempo:'2-1-1', tags:['Maison']},
+    {n:'Crunchs obliques sol',       rest:45,  kg:0,   reps:[15,20], tempo:'2-1-1', tags:['Maison']},
+    {n:'Russian twist haltere',      rest:45,  kg:8,   reps:[12,15], tempo:'1-1-1', tags:['Maison']},
+    {n:'Planche',                    rest:60,  kg:0,   reps:[30,60], tempo:'—',     tags:['Maison']},
+    {n:'Planche laterale',           rest:45,  kg:0,   reps:[20,40], tempo:'—',     tags:['Maison']},
+    {n:'Mountain climbers',          rest:45,  kg:0,   reps:[20,30], tempo:'—',     tags:['Maison']},
+    {n:'Cable crunch',               rest:60,  kg:20,  reps:[12,15], tempo:'2-1-1', tags:['Salle']},
+    {n:'Cable obliques',             rest:60,  kg:15,  reps:[12,15], tempo:'2-1-1', tags:['Salle']},
+    {n:'Decline crunch',             rest:60,  kg:0,   reps:[12,15], tempo:'2-1-1', tags:['Salle']},
+  ]},
+];
+
+let aeSelectedExo = null;
+let aeCurGroup = null;
+
+function openAddModal(){
+  aeSelectedExo = null; aeCurGroup = null;
+  document.getElementById('ae-step1').style.display='';
+  document.getElementById('ae-step2').style.display='none';
+  document.getElementById('ae-step3').style.display='none';
+  document.getElementById('ae-step-lbl').textContent='Choisis un groupe musculaire';
+  // Render groups
+  document.getElementById('ae-groups').innerHTML = EXLIB.map((g,i)=>`
+    <button class="ae-group-btn" onclick="aeSelectGroup(${i})">
+      <div class="ae-group-left">
+        <div class="ae-group-icon">${g.icon}</div>
+        <div>
+          <div class="ae-group-name">${g.group}</div>
+          <div class="ae-group-count">${g.exos.length} exercices</div>
+        </div>
+      </div>
+      <div class="ae-group-arrow">›</div>
+    </button>`).join('');
+  document.getElementById('add-modal').classList.add('on');
+}
+
+function aeSelectGroup(i){
+  aeCurGroup = i;
+  const g = EXLIB[i];
+  document.getElementById('ae-step1').style.display='none';
+  document.getElementById('ae-step2').style.display='';
+  document.getElementById('ae-step-lbl').textContent=g.group;
+  document.getElementById('ae-exo-list').innerHTML = g.exos.map((ex,j)=>`
+    <div class="ae-exo-card" onclick="aeSelectExo(${i},${j})">
+      <div class="ae-exo-name">${ex.n}</div>
+      <div class="ae-exo-tags">
+        ${ex.tags.map(t=>`<span class="ae-tag ${t==='Maison'?'home':'gym'}">${t}</span>`).join('')}
+        ${ex.tempo&&ex.tempo!=='—'?`<span class="ae-tag tempo">Tempo ${ex.tempo}</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function aeBack(){
+  document.getElementById('ae-step2').style.display='none';
+  document.getElementById('ae-step1').style.display='';
+  document.getElementById('ae-step-lbl').textContent='Choisis un groupe musculaire';
+}
+
+function aeSelectExo(gi,ei){
+  aeSelectedExo = EXLIB[gi].exos[ei];
+  document.getElementById('ae-step2').style.display='none';
+  document.getElementById('ae-step3').style.display='';
+  document.getElementById('ae-step-lbl').textContent='Configuration';
+  document.getElementById('ae-selected-name').textContent=aeSelectedExo.n;
+  document.getElementById('ae-sets').value=3;
+  document.getElementById('ae-reps').value=`${aeSelectedExo.reps[0]}-${aeSelectedExo.reps[1]}`;
+  document.getElementById('ae-kg').value=aeSelectedExo.kg;
+  document.getElementById('ae-rest').value=aeSelectedExo.rest;
+}
+
+function aeBack2(){
+  document.getElementById('ae-step3').style.display='none';
+  document.getElementById('ae-step2').style.display='';
+  document.getElementById('ae-step-lbl').textContent=EXLIB[aeCurGroup].group;
+}
+
 document.getElementById('btn-close-add').addEventListener('click',()=>document.getElementById('add-modal').classList.remove('on'));
 document.getElementById('add-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on')});
+
 document.getElementById('ae-ok').addEventListener('click',()=>{
-  const name=document.getElementById('ae-name').value.trim(); if(!name)return;
+  if(!aeSelectedExo)return;
   const sets=parseInt(document.getElementById('ae-sets').value)||3;
   const rs=document.getElementById('ae-reps').value||'10-12', m=rs.match(/(\d+)/g);
-  const reps=m&&m.length>=2?[parseInt(m[0]),parseInt(m[1])]:[10,12];
-  const kg=parseFloat(document.getElementById('ae-kg').value)||20;
-  const rest=parseInt(document.getElementById('ae-rest').value)||90;
+  const reps=m&&m.length>=2?[parseInt(m[0]),parseInt(m[1])]:aeSelectedExo.reps;
+  const kg=parseFloat(document.getElementById('ae-kg').value)||aeSelectedExo.kg;
+  const rest=parseInt(document.getElementById('ae-rest').value)||aeSelectedExo.rest;
   const id='x'+Date.now();
-  extras.push({id,name,sets,reps,rest,kg,wu:0,tempo:null,note:'',alts:null});
+  extras.push({id,name:aeSelectedExo.n,sets,reps,rest,kg,wu:0,tempo:aeSelectedExo.tempo,note:'',alts:null});
   const mid=Math.round((reps[0]+reps[1])/2);
   setsDone[id]=new Array(sets+1).fill(false);
   setWts[id]=new Array(sets+1).fill(kg);
   setReps[id]=new Array(sets+1).fill(mid);
-  activeNames[id]=name;
+  activeNames[id]=aeSelectedExo.n;
   document.getElementById('add-modal').classList.remove('on');
-  document.getElementById('ae-name').value='';
+  aeSelectedExo=null;
   renderSession();
 });
 
