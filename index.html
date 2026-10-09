@@ -777,31 +777,39 @@
 
 <script>
 /* ══════════════════════════════════════════
-   TRAINFORGE v3 — Redesign épuré
-   Split Haut/Bas · Prise de masse
+   TRAINFORGE v4
+   Programme 4 jours : Haut A · Bas A · Haut B · Bas B
 ══════════════════════════════════════════ */
 
 const EXO_MUSCLES = {
-  bp:['pectoraux','triceps','epaules'], row_b:['dos','biceps'],
-  ohp:['epaules','triceps'], dips:['triceps','pectoraux'], curl_b:['biceps'],
-  sq:['quadriceps','fessiers'], rdl:['ischio-jambiers','fessiers'],
-  lunge:['quadriceps','fessiers'], mollet_d:['mollets'], cr_abs:['abdominaux'],
-  dl:['dos','ischio-jambiers'], trac:['dos','biceps'],
-  inc_h:['pectoraux','epaules'], oiseau:['epaules'], shrug:['trapezes'],
-  dl2:['ischio-jambiers','fessiers'], sq_sumo:['fessiers','quadriceps','adducteurs'],
-  hip_b:['fessiers','ischio-jambiers'], mollet_a:['mollets'], abs_cr:['abdominaux'],
+  /* Haut A */
+  a_inc:['pectoraux','epaules'], a_bp:['pectoraux','triceps','epaules'],
+  a_lat:['epaules'], a_lat1:['epaules'], a_pomp:['pectoraux','triceps'],
+  a_ext:['triceps'], a_curl:['biceps'],
+  /* Bas A */
+  b_sq:['quadriceps','fessiers'], b_rdl:['ischio-jambiers','fessiers'],
+  b_bulg:['quadriceps','fessiers'], b_moll:['mollets'],
+  b_rel:['abdominaux'], b_crunch:['abdominaux'],
+  /* Haut B */
+  c_trac:['dos','biceps'], c_row:['dos','biceps'], c_row1:['dos','biceps'],
+  c_pull:['dos','pectoraux'], c_lat:['epaules'], c_oiseau:['epaules'],
+  c_curl:['biceps'], c_ext:['triceps'],
+  /* Bas B */
+  d_rdl:['ischio-jambiers','fessiers'], d_gob:['quadriceps','fessiers'],
+  d_bulg:['quadriceps','fessiers'], d_moll:['mollets'],
+  d_inc:['pectoraux','epaules'], d_lat:['epaules'], d_rel:['abdominaux'],
 };
 
 const MUSCLE_REC = {
-  pectoraux:72, dos:72, epaules:48, triceps:48, biceps:48, trapezes:48,
-  quadriceps:72, 'ischio-jambiers':72, fessiers:72, mollets:48, abdominaux:24, adducteurs:48
+  pectoraux:72, dos:72, epaules:48, triceps:48, biceps:48,
+  quadriceps:72, 'ischio-jambiers':72, fessiers:72, mollets:48, abdominaux:24
 };
 
 const VOL_TARGETS = {
   pectoraux:{min:12,max:20}, dos:{min:14,max:22}, epaules:{min:12,max:20},
-  trapezes:{min:8,max:14}, triceps:{min:10,max:14}, biceps:{min:10,max:14},
+  triceps:{min:10,max:14}, biceps:{min:10,max:14},
   quadriceps:{min:12,max:20}, 'ischio-jambiers':{min:10,max:16}, fessiers:{min:10,max:16},
-  mollets:{min:8,max:14}, abdominaux:{min:6,max:12}, adducteurs:{min:6,max:10}
+  mollets:{min:8,max:14}, abdominaux:{min:6,max:12}
 };
 
 const VLBL = {
@@ -811,65 +819,130 @@ const VLBL = {
   abdominaux:'Abdos', adducteurs:'Adducteurs'
 };
 
+/* ══ ALTERNATIVES PARTAGEES ══ */
+const ALT_INC = {
+  maison:[{n:"Développé incliné barre",m:"Même plan, charge plus lourde"}],
+  salle:[{n:"Développé incliné machine",m:"Trajectoire guidée"}]
+};
+const ALT_LAT = {
+  maison:[{n:"Élévations latérales unilatérales",m:"Plus de contrôle"}],
+  salle:[{n:"Élévations latérales câble",m:"Tension constante"}]
+};
+const ALT_RDL = {
+  maison:[{n:"RDL haltères",m:"Même schéma de mouvement"}],
+  salle:[{n:"Leg curl allongé machine",m:"Isolation ischios"}]
+};
+const ALT_BULG = {
+  maison:[{n:"Fentes statiques haltères",m:"Plus stable"}],
+  salle:[{n:"Fentes Smith Machine",m:"Guidé"}]
+};
+const ALT_MOLL = {
+  maison:[{n:"Mollets 1 jambe sur marche",m:"Poids de corps + haltère"}],
+  salle:[{n:"Machine mollets debout",m:"Charge lourde"}]
+};
+const ALT_REL = {
+  maison:[{n:"Crunchs au sol",m:"Plus simple"}],
+  salle:[{n:"Cable crunch",m:"Charge ajustable"}]
+};
+const ALT_CURL = {
+  maison:[{n:"Curl marteau haltères",m:"Brachial + avant-bras"}],
+  salle:[{n:"Curl câble bas",m:"Tension constante"}]
+};
+const ALT_EXT = {
+  maison:[{n:"Extension triceps haltère 1 bras",m:"Isolation"}],
+  salle:[{n:"Triceps poulie haute corde",m:"Tension constante"}]
+};
+const ALT_ROW = {
+  maison:[{n:"Rowing haltères buste penché",m:"Même schéma"}],
+  salle:[{n:"Rowing poulie basse",m:"Tension constante"}]
+};
+
+/* ══ PROGRAMME (source : programme_musculation_4_jours.pdf) ══
+   reps = fourchette [min,max] · rest en secondes · kg = charge de départ (0 = a calibrer)
+   wu = facteur d echauffement · inc = pas de progression en kg · rir = cible RIR */
 const PROGRAM = [
-  { id:'hautA', name:'Haut A', type:'haut', desc:'Pecto · Dos · Epaules · Bras',
-    muscles:['pectoraux','dos','epaules','triceps','biceps'],
+  { id:'hautA', name:'Haut A', type:'haut', desc:'Pectoraux · Epaules · Triceps',
+    muscles:['pectoraux','epaules','triceps','biceps'],
     exercises:[
-      {id:'bp',    name:'Developpé couché',      sets:4, reps:[8,12],  rest:120, kg:60,  wu:.5,  tempo:'3-1-1', note:'Descends en 3s, pause 1s.',
-       alts:{maison:[{n:'Developpé halteres',m:'Amplitude plus grande',kg:24}],salle:[{n:'Developpé machine convergent',m:'Guide',kg:50}]}},
-      {id:'row_b', name:'Rowing barre',           sets:4, reps:[8,12],  rest:120, kg:60,  wu:.5,  tempo:'3-1-1', note:'Buste 45°, 3s retour.',
-       alts:{maison:[{n:'Rowing haltere 1 bras',m:'Appui banc',kg:24}],salle:[{n:'Rowing poulie basse',m:'Tension constante',kg:50}]}},
-      {id:'ohp',   name:'Developpé militaire',    sets:3, reps:[10,12], rest:90,  kg:40,  wu:.5,  tempo:'2-1-1', note:'Gainez fort.',
-       alts:{maison:[{n:'Developpé militaire halteres',m:'Stabilisateurs ++',kg:16}],salle:[{n:'Presse epaules machine',m:'Guide',kg:30}]}},
-      {id:'dips',  name:'Dips banc',              sets:3, reps:[10,15], rest:75,  kg:0,   wu:0,   tempo:'3-1-1', note:'3s descente, coudes arriere.',
-       alts:{maison:[{n:'Extension triceps barre',m:'Front press allonge',kg:25}],salle:[{n:'Triceps poulie corde',m:'Isolation',kg:20}]}},
-      {id:'curl_b',name:'Curl barre',             sets:3, reps:[10,12], rest:75,  kg:30,  wu:.6,  tempo:'3-1-1', note:'3s descente, supination totale.',
-       alts:{maison:[{n:'Curl halteres alternes',m:'Supination maximale',kg:12}],salle:[{n:'Curl pupitre EZ',m:'Isolation stricte',kg:25}]}},
+      {id:'a_inc',   name:"Développé incliné haltères", sets:4, reps:[6,10],  rest:165, kg:26, wu:.5, inc:2, rir:"1-2", tempo:"",
+       note:"Priorité au haut des pectoraux. Technique stricte.", alts:ALT_INC},
+      {id:'a_bp',    name:"Développé couché",           sets:3, reps:[6,10],  rest:165, kg:0,  wu:.5, inc:2.5, rir:"1-2", tempo:"",
+       note:"Charge à calibrer.",
+       alts:{maison:[{n:"Développé haltères couché",m:"Plus grande amplitude"}],salle:[{n:"Développé convergent machine",m:"Trajectoire guidée"}]}},
+      {id:'a_lat',   name:"Élévations latérales haltères", sets:4, reps:[12,20], rest:75, kg:8, wu:0, inc:1, rir:"1-2", tempo:"",
+       note:"Priorité aux deltoïdes latéraux.", alts:ALT_LAT},
+      {id:'a_lat1',  name:"Élévations latérales unilatérales / variante contrôlée", sets:3, reps:[12,20], rest:75, kg:0, wu:0, inc:1, rir:"1-2", tempo:"",
+       note:"Charge à calibrer.",
+       alts:{maison:[{n:"Élévations latérales haltères",m:"Version bilatérale"}],salle:[{n:"Élévation latérale câble 1 bras",m:"Tension constante"}]}},
+      {id:'a_pomp',  name:"Pompes pieds surélevés",     sets:2, reps:[10,20], rest:90, kg:0, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"Charge = lest ajouté (0 = poids de corps).",
+       alts:{maison:[{n:"Pompes classiques",m:"Moins difficile"}]}},
+      {id:'a_ext',   name:"Extension triceps au-dessus de la tête (haltère)", sets:3, reps:[8,15], rest:105, kg:0, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"Charge à calibrer.", alts:ALT_EXT},
+      {id:'a_curl',  name:"Curl alterné haltères",      sets:3, reps:[8,12],  rest:105, kg:0, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"Charge par haltère, à calibrer.", alts:ALT_CURL},
     ]
   },
-  { id:'jambesA', name:'Jambes A', type:'jambes', desc:'Quad · Ischio · Mollets · Abdos',
-    muscles:['quadriceps','ischio-jambiers','mollets','abdominaux','fessiers'],
+  { id:'jambesA', name:'Bas A', type:'jambes', desc:'Jambes · Abdos',
+    muscles:['quadriceps','ischio-jambiers','fessiers','mollets','abdominaux'],
     exercises:[
-      {id:'sq',      name:'Squat barre',              sets:4, reps:[8,10],  rest:150, kg:80,  wu:.5, tempo:'3-1-1', note:'3s descente, genoux dans axe.',
-       alts:{maison:[{n:'Goblet squat haltere',m:'Technique',kg:24}],salle:[{n:'Leg press',m:'Volume eleve',kg:120}]}},
-      {id:'rdl',     name:'Romanian Deadlift',        sets:3, reps:[8,12],  rest:120, kg:70,  wu:.5, tempo:'3-1-1', note:'3s descente, dos neutre.',
-       alts:{maison:[{n:'RDL halteres',m:'Amplitude +',kg:26}],salle:[{n:'Leg curl allonge',m:'Isolation ischio',kg:35}]}},
-      {id:'lunge',   name:'Fentes marchees',          sets:3, reps:[10,12], rest:90,  kg:18,  wu:.5, tempo:'2-1-1', note:'Genou avant dans axe pied.',
-       alts:{maison:[{n:'Split squat bulgare',m:'Intensite +++',kg:16}],salle:[{n:'Fentes Smith',m:'Guide',kg:40}]}},
-      {id:'mollet_d',name:'Mollets debout',           sets:4, reps:[12,15], rest:45,  kg:24,  wu:0,  tempo:'2-1-2', note:'Monte sur marche, 2s descente.',
-       alts:{maison:[{n:'Mollets debout barre',m:'Charge +',kg:60}],salle:[{n:'Machine mollets debout',m:'Lourd',kg:80}]}},
-      {id:'cr_abs',  name:'Chaise romaine relevés',   sets:3, reps:[12,15], rest:60,  kg:0,   wu:0,  tempo:'2-1-2', note:'Dos plaque, controle.',
-       alts:{maison:[{n:'Crunchs sol',m:'Simple',kg:0}],salle:[{n:'Cable crunch',m:'Charge ajustable',kg:20}]}},
+      {id:'b_sq',    name:"Squat barre",                sets:4, reps:[6,10],  rest:165, kg:0, wu:.5, inc:2.5, rir:"1-2", tempo:"",
+       note:"Amplitude indolore et maîtrisée. Si le bas du dos réagit, réduis la charge ou l'amplitude ; ne force pas à travers la douleur.",
+       alts:{maison:[{n:"Goblet squat haltère",m:"Plus léger pour le dos"}],salle:[{n:"Leg press",m:"Dos soulagé"}]}},
+      {id:'b_rdl',   name:"Soulevé de terre roumain (RDL)", sets:3, reps:[8,12], rest:165, kg:80, wu:.5, inc:2.5, rir:"1-2", tempo:"",
+       note:"Départ à 80 kg (référence jour 4), à ajuster.", alts:ALT_RDL},
+      {id:'b_bulg',  name:"Fente bulgare",              sets:3, reps:[8,12],  rest:120, kg:24, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"Par jambe. Charge = total des haltères (départ 24 kg, référence jour 4).", alts:ALT_BULG},
+      {id:'b_moll',  name:"Mollets debout",             sets:4, reps:[10,20], rest:75, kg:30, wu:0, inc:2.5, rir:"1-2", tempo:"",
+       note:"Départ à 30 kg (référence jour 4).", alts:ALT_MOLL},
+      {id:'b_rel',   name:"Relevés de jambes sur chaise romaine", sets:3, reps:[10,20], rest:75, kg:0, wu:0, inc:2.5, rir:"1-2", tempo:"",
+       note:"", alts:ALT_REL},
+      {id:'b_crunch',name:"Crunch lesté",               sets:2, reps:[10,15], rest:75, kg:0, wu:0, inc:2.5, rir:"1-2", tempo:"",
+       note:"Charge à calibrer.",
+       alts:{salle:[{n:"Cable crunch",m:"Charge ajustable"}]}},
     ]
   },
-  { id:'hautB', name:'Haut B', type:'haut', desc:'Dos · Pecto · Epaules · Trapezes',
-    muscles:['dos','pectoraux','epaules','trapezes','biceps','triceps'],
+  { id:'hautB', name:'Haut B', type:'haut', desc:'Dos · Epaules · Bras',
+    muscles:['dos','epaules','biceps','triceps'],
     exercises:[
-      {id:'dl',    name:'Soulevé de terre',        sets:4, reps:[5,6],   rest:180, kg:100, wu:.5, tempo:'2-1-1', note:'Dos neutre, barre contre tibias.',
-       alts:{maison:[{n:'SDT halteres',m:'Meme pattern',kg:30}],salle:[{n:'Rack pull genoux',m:'Dos epais',kg:120}]}},
-      {id:'trac',  name:'Tractions',               sets:4, reps:[6,10],  rest:120, kg:0,   wu:0,  tempo:'3-1-1', note:'3s descente controlee.',
-       alts:{maison:[{n:'Tractions prise neutre',m:'Plus biceps',kg:0}],salle:[{n:'Lat pulldown poulie',m:'Charge ajustable',kg:50}]}},
-      {id:'inc_h', name:'Developpé incline halteres', sets:3, reps:[10,12], rest:90, kg:22, wu:.5, tempo:'3-1-1', note:'Banc 30°, 3s descente.',
-       alts:{maison:[{n:'Developpé incline barre',m:'Charge +',kg:50}],salle:[{n:'Developpé incline machine',m:'Guide',kg:40}]}},
-      {id:'oiseau',name:'Oiseau rear delt',        sets:3, reps:[12,15], rest:60,  kg:8,   wu:0,  tempo:'2-1-2', note:'Buste 90°, leger, contraction.',
-       alts:{maison:[{n:'Oiseau couche banc incline',m:'Stabilise',kg:6}],salle:[{n:'Pec deck inverse',m:'Isolation',kg:20}]}},
-      {id:'shrug', name:'Haussements epaules',     sets:3, reps:[12,15], rest:60,  kg:80,  wu:.6, tempo:'1-2-1', note:'Tiens 2s en haut, descente lente.',
-       alts:{maison:[{n:'Haussements halteres',m:'Amplitude +',kg:30}],salle:[{n:'Haussements poulie basse',m:'Tension en bas',kg:40}]}},
+      {id:'c_trac',  name:"Tractions pronation lestées", sets:4, reps:[6,10], rest:165, kg:5, wu:0, inc:2.5, rir:"1-2", tempo:"",
+       note:"Charge = lest ajouté (+5 kg). Répétitions contrôlées, sans élan.",
+       alts:{maison:[{n:"Tractions pronation",m:"Sans lest"}],salle:[{n:"Lat pulldown large prise",m:"Charge ajustable"}]}},
+      {id:'c_row',   name:"Rowing barre",               sets:4, reps:[6,10],  rest:165, kg:64, wu:.5, inc:2.5, rir:"1-2", tempo:"",
+       note:"Sans élan.", alts:ALT_ROW},
+      {id:'c_row1',  name:"Rowing unilatéral haltère",  sets:3, reps:[10,15], rest:105, kg:30, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"Par côté.",
+       alts:{maison:[{n:"Rowing haltères buste penché",m:"Bilatéral"}],salle:[{n:"Rowing poulie basse 1 bras",m:"Tension constante"}]}},
+      {id:'c_pull',  name:"Pull-over haltère",          sets:3, reps:[10,15], rest:90, kg:16, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"", alts:{salle:[{n:"Pull-over poulie haute",m:"Tension constante"}]}},
+      {id:'c_lat',   name:"Élévations latérales",       sets:4, reps:[12,20], rest:75, kg:10, wu:0, inc:1, rir:"1-2", tempo:"",
+       note:"", alts:ALT_LAT},
+      {id:'c_oiseau',name:"Oiseau / élévations arrière haltères", sets:3, reps:[12,20], rest:75, kg:12, wu:0, inc:1, rir:"1-2", tempo:"",
+       note:"", alts:{salle:[{n:"Pec deck inversé",m:"Isolation"}]}},
+      {id:'c_curl',  name:"Curl haltères",              sets:3, reps:[8,12],  rest:105, kg:16, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"Charge par haltère.", alts:ALT_CURL},
+      {id:'c_ext',   name:"Extension triceps au-dessus de la tête (haltère à deux mains)", sets:3, reps:[10,15], rest:105, kg:30, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"", alts:ALT_EXT},
     ]
   },
-  { id:'jambesB', name:'Jambes B', type:'jambes', desc:'Ischio · Fessiers · Quad · Mollets',
-    muscles:['ischio-jambiers','fessiers','quadriceps','mollets','abdominaux','adducteurs'],
+  { id:'jambesB', name:'Bas B', type:'jambes', desc:'Jambes · Rappel haut du corps',
+    muscles:['ischio-jambiers','fessiers','quadriceps','mollets','abdominaux','pectoraux','epaules'],
     exercises:[
-      {id:'dl2',    name:'SDT jambes tendues',     sets:4, reps:[8,12],  rest:120, kg:60,  wu:.5, tempo:'3-1-1', note:'3s descente, ischios en tension.',
-       alts:{maison:[{n:'Good Morning barre',m:'Ischios + lombaires',kg:40}],salle:[{n:'Leg curl allonge machine',m:'Isolation',kg:40}]}},
-      {id:'sq_sumo',name:'Squat Sumo goblet',      sets:3, reps:[10,12], rest:90,  kg:28,  wu:.5, tempo:'3-1-1', note:'Pieds 45°, fessiers + adducteurs.',
-       alts:{maison:[{n:'Squat sumo barre',m:'Plus lourd',kg:70}],salle:[{n:'Leg press pieds ecartes',m:'Adducteurs +',kg:100}]}},
-      {id:'hip_b',  name:'Hip thrust barre',       sets:4, reps:[10,12], rest:90,  kg:60,  wu:.5, tempo:'1-2-1', note:'Tiens 2s, contraction fessiers max.',
-       alts:{maison:[{n:'Hip thrust haltere',m:'Meme mouvement',kg:24}],salle:[{n:'Hip thrust machine',m:'Charge lourde',kg:80}]}},
-      {id:'mollet_a',name:'Mollets assis',         sets:4, reps:[12,15], rest:45,  kg:22,  wu:0,  tempo:'2-1-2', note:'Soleaire dominant, 2s descente.',
-       alts:{maison:[{n:'Mollets debout barre',m:'Gastrocnemien',kg:60}],salle:[{n:'Machine mollets assis',m:'Lourd',kg:50}]}},
-      {id:'abs_cr', name:'Chaise romaine obliques', sets:3, reps:[12,12], rest:60, kg:0,   wu:0,  tempo:'2-1-2', note:'Rotation controlee, 2s descente.',
-       alts:{maison:[{n:'Russian twist haltere',m:'Obliques +++',kg:8}],salle:[{n:'Cable obliques',m:'Tension constante',kg:15}]}},
+      {id:'d_rdl',   name:"Soulevé de terre roumain (RDL)", sets:4, reps:[8,12], rest:165, kg:80, wu:.5, inc:2.5, rir:"1-2", tempo:"",
+       note:"Évite d'enchaîner les jours 3 et 4 ; sinon garde le haut du corps facile.", alts:ALT_RDL},
+      {id:'d_gob',   name:"Goblet squat",               sets:4, reps:[10,15], rest:120, kg:37, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"",
+       alts:{maison:[{n:"Squat haltères",m:"Même schéma"}],salle:[{n:"Leg press",m:"Volume élevé"}]}},
+      {id:'d_bulg',  name:"Fente bulgare",              sets:3, reps:[8,12],  rest:120, kg:24, wu:0, inc:2, rir:"1-2", tempo:"",
+       note:"Par jambe. 24 kg au total, à tester sur 3 séries.", alts:ALT_BULG},
+      {id:'d_moll',  name:"Mollets",                    sets:4, reps:[12,20], rest:75, kg:30, wu:0, inc:2.5, rir:"1-2", tempo:"",
+       note:"", alts:ALT_MOLL},
+      {id:'d_inc',   name:"Développé incliné haltères", sets:3, reps:[8,12],  rest:120, kg:26, wu:.5, inc:2, rir:"2", tempo:"",
+       note:"Rappel haut du corps : environ 2 RIR, ne cherche pas l'échec, surtout juste après le jour 3.", alts:ALT_INC},
+      {id:'d_lat',   name:"Élévations latérales",       sets:3, reps:[15,20], rest:70, kg:8, wu:0, inc:1, rir:"2", tempo:"",
+       note:"Rappel haut du corps : environ 2 RIR.", alts:ALT_LAT},
+      {id:'d_rel',   name:"Relevés de jambes sur chaise romaine", sets:3, reps:[10,20], rest:75, kg:0, wu:0, inc:2.5, rir:"1-2", tempo:"",
+       note:"Abdos faits séparément si déjà travaillés.", alts:ALT_REL},
     ]
   }
 ];
@@ -1009,6 +1082,10 @@ function renderBW(){
 
 /* ══ HELPERS ══ */
 function getCol(p){return p>=80?'#00E5C8':p>=50?'#F5A623':'#FF3B55'}
+function getInc(id){
+  const e=PROGRAM.flatMap(s=>s.exercises).find(x=>x.id===id)||extras.find(x=>x.id===id);
+  return (e&&e.inc)||2.5;
+}
 function getWeeklyVol(){
   const ago=Date.now()-7*24*3600*1000, vol={};
   history.filter(h=>new Date(h.date).getTime()>=ago).forEach(h=>{
@@ -1035,7 +1112,7 @@ function getRec(){
 function getDP(id,reps){
   const logs=setsLog[id]; if(!logs||logs.length<3)return null;
   if(logs.slice(-4).every(l=>l.reps>=reps[1])){
-    const nk=Math.round(((weights[id]??0)+2.5)*4)/4;
+    const nk=Math.round(((weights[id]??0)+getInc(id))*4)/4;
     return{nk,hint:`Monte a ${nk}kg, repars a ${reps[0]} reps`};
   }
   return null;
@@ -1149,6 +1226,7 @@ function renderSession(){
       <div class="exo-stage-idx">Exercice ${ei+1} / ${all.length}</div>
       <div class="exo-stage-name" id="xname-${ex.id}">${activeNames[ex.id]}</div>
       <div class="exo-stage-detail">${ex.sets} series · ${ex.reps[0]}-${ex.reps[1]} reps · ${ex.rest}s repos</div>
+      <div class="exo-stage-detail" style="color:var(--teal)">Cible : ${ex.rir||"1-2"} RIR</div>
       ${ex.tempo?`<div class="exo-stage-tempo">Tempo ${ex.tempo}</div>`:''}
       ${ex.note?`<div class="exo-stage-detail" style="margin-top:2px;font-style:italic">${ex.note}</div>`:''}
       ${dp?`<div class="exo-dp-badge">📈 ${dp.hint}</div>`:''}
@@ -1216,7 +1294,21 @@ function renderSession(){
   document.getElementById('exo-stage').innerHTML=html;
 }
 
-function chgWt(id,si,v){if(!setWts[id])setWts[id]=[];setWts[id][si]=parseFloat(v)||0}
+// Changer la charge d'une série de travail la reporte sur les séries suivantes non faites
+function chgWt(id,si,v){
+  if(!setWts[id])setWts[id]=[];
+  const val=parseFloat(v)||0;
+  setWts[id][si]=val;
+  if(si>=1){
+    const ex=getAllExos().find(e=>e.id===id);
+    for(let j=si+1;j<=(ex?ex.sets:0);j++){
+      if(setsDone[id]?.[j])continue;
+      setWts[id][j]=val;
+      const inp=document.querySelector(`#sc-${id}-${j} .set-inp`);
+      if(inp)inp.value=val;
+    }
+  }
+}
 function chgReps(id,si,v){if(!setReps[id])setReps[id]=[];setReps[id][si]=parseInt(v)||0}
 
 function addSet(id){
@@ -1615,11 +1707,11 @@ function finishSession(){
       if(setsDone[ex.id]?.[i]) setsLog[ex.id].push({kg:setWts[ex.id][i]??aKg,reps:setReps[ex.id][i]??aReps,rir:sessRir[ex.id]??null,targetReps:ex.reps[1],date:new Date().toISOString()});
     }
     const allDone=(()=>{for(let i=1;i<=ex.sets;i++)if(!setsDone[ex.id]?.[i])return false;return true})();
-    if(allDone&&aReps>=ex.reps[1]){const nk=Math.round((aKg+2.5)*4)/4;sugs.push({n:activeNames[ex.id],old:aKg.toFixed(1),nk});weights[ex.id]=nk}
+    if(allDone&&aReps>=ex.reps[1]){const nk=Math.round((aKg+getInc(ex.id))*4)/4;sugs.push({n:activeNames[ex.id],old:aKg.toFixed(1),nk});weights[ex.id]=nk}
     else weights[ex.id]=aKg;
     const rv=sessRir[ex.id];
     if(rv===0) rirAlerts.push({n:activeNames[ex.id],msg:"Echec atteint — garde la charge.",c:'var(--amber)'});
-    else if(rv>=4) rirAlerts.push({n:activeNames[ex.id],msg:"Trop facile — monte de 5kg.",c:'var(--teal)'});
+    else if(rv>=4) rirAlerts.push({n:activeNames[ex.id],msg:"Trop facile — augmente un peu la charge.",c:'var(--teal)'});
   });
 
   SS('tf_wts',weights);SS('tf_log',setsLog);
